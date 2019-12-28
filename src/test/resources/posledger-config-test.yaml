@@ -1,0 +1,16 @@
+# Posledger Configuration
+
+adminName: admin
+adminPassword: adminpw
+ordererName: orderer.testledger.com
+ordererUrl: grpc://192.168.193.111:7050
+channelName: channelone
+orgName: org1
+orgMsp: Org1MSP
+adminitratorName: administrator
+userName: assetuser
+caUrl: http://192.168.193.111:7054
+eventHubName: eventhub01
+eventHubUrl: grpc://192.168.193.113:8053
+peerName: peer0.org1.testledger.com
+peerUrl: grpc://192.168.193.111:7051

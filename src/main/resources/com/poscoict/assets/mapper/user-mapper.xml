@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="userMapper">
+
+	<resultMap id="user-result" type="user">
+		<result property="userId" column="USER_ID" jdbcType="VARCHAR" />
+		<result property="orgCode" column="ORG_CODE" jdbcType="VARCHAR" />
+		<result property="userType" column="USER_TYPE" jdbcType="VARCHAR" />
+		<result property="certAddress" column="CERT_ADDRESS" jdbcType="VARCHAR" />
+		<result property="deviceAddress" column="DEVICE_ADDRESS" jdbcType="VARCHAR" />
+		<result property="pushToken" column="PUSH_TOKEN" jdbcType="VARCHAR" />
+		<result property="registDate" column="REGIST_DATE" jdbcType="CHAR" typeHandler="com.poscoict.assets.jdbc.handler.DateTypeHandler" />
+		<result property="modifyDate" column="MODIFY_DATE" jdbcType="CHAR" typeHandler="com.poscoict.assets.jdbc.handler.DateTypeHandler" />
+		<result property="lastLoginDate" column="LAST_LOGIN_DATE" jdbcType="CHAR" typeHandler="com.poscoict.assets.jdbc.handler.DateTypeHandler" />
+	</resultMap>
+
+	<select id="getUserByCertAddress" parameterType="map" resultMap="user-result">
+		SELECT *
+		FROM wallet.TB_USER
+		WHERE CERT_ADDRESS = #{certAddress}
+	</select>
+	
+	<insert id="insertUser" parameterType="user">
+		INSERT INTO wallet.TB_USER (
+			USER_ID,
+			ORG_CODE,
+			USER_TYPE,
+			CERT_ADDRESS,
+			DEVICE_ADDRESS,
+			PUSH_TOKEN,
+			REGIST_DATE
+		) values (
+			#{userId},
+			#{orgCode},
+			#{userType},
+			#{certAddress},
+			#{deviceAddress},
+			#{pushToken},
+			#{registDate, typeHandler=com.poscoict.assets.jdbc.handler.DateTypeHandler}
+		)
+	</insert>
+	
+</mapper>
