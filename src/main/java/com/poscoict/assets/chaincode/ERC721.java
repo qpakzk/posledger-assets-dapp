@@ -18,7 +18,6 @@ public class ERC721 {
 
     private static String chaincodeId = "assetscc";
 
-
     private static final String MINT_FUNCTION_NAME = "mint";
 
     private static final String BALANCE_OF_FUNCTION_NAME = "balanceOf";

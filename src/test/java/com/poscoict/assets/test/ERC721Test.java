@@ -13,8 +13,6 @@ import org.junit.runner.RunWith;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -25,13 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.math.BigInteger;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @Configuration
-@EnableAutoConfiguration
 @ComponentScan
 @ContextConfiguration(classes = SpringConfig.class)
 public class ERC721Test {
@@ -99,7 +94,7 @@ public class ERC721Test {
 
         erc721.setCaller(alice);
         boolean result = erc721.mint(tokenId, alice);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -144,7 +139,7 @@ public class ERC721Test {
         }
 
         BigInteger balance = erc721.balanceOf(alice);
-        assertThat(balance).isEqualTo(BigInteger.ONE);
+        assertEquals(balance, BigInteger.ONE);
     }
 
     @Test
@@ -189,7 +184,7 @@ public class ERC721Test {
         }
 
         String owner = erc721.ownerOf(tokenId);
-        assertThat(owner).isEqualTo(alice);
+        assertEquals(owner, alice);
     }
 
 
@@ -276,7 +271,7 @@ public class ERC721Test {
 
         erc721.setCaller(alice);
         boolean result = erc721.transferFrom(alice, bob, tokenId);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -322,7 +317,7 @@ public class ERC721Test {
 
         erc721.setCaller(alice);
         BigInteger result = erc721.balanceOf(alice);
-        assertThat(result).isEqualTo(BigInteger.ZERO);
+        assertEquals(result, BigInteger.ZERO);
     }
 
     @Test
@@ -367,7 +362,7 @@ public class ERC721Test {
         }
 
         String result = erc721.ownerOf(tokenId);
-        assertThat(result).isEqualTo(bob);
+        assertEquals(result, bob);
     }
 
     @Test
@@ -452,7 +447,7 @@ public class ERC721Test {
 
         erc721.setCaller(bob);
         boolean result = erc721.approve(carol, tokenId);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -497,7 +492,7 @@ public class ERC721Test {
         }
 
         String result = erc721.getApproved(tokenId);
-        assertThat(result).isEqualTo(carol);
+        assertEquals(result, carol);
     }
 
     @Test
@@ -582,7 +577,7 @@ public class ERC721Test {
 
         erc721.setCaller(bob);
         boolean result = erc721.setApprovalForAll(david,true);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true); //(result).isEqualTo(true);
     }
 
     @Test
@@ -666,6 +661,6 @@ public class ERC721Test {
         }
 
         boolean result = erc721.isApprovedForAll(bob, david);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 }

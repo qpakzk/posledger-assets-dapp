@@ -9,8 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -27,11 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @Configuration
-@EnableAutoConfiguration
 @ComponentScan
-//@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SpringConfig.class)
 public class PosCertificateMetadata {
 
@@ -68,7 +63,7 @@ public class PosCertificateMetadata {
         try {
             posCertificate = (PosCertificate) objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
         } catch(Exception e) {
-            //logger.error(e);
+            logger.error(e);
             throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
         }
 
@@ -78,7 +73,7 @@ public class PosCertificateMetadata {
         try {
             result = posCertificateService.verifyPosCertificatePassword(posCertificate, certiPassword);
         } catch(Exception e) {
-            //logger.error(e);
+            logger.error(e);
             throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
         }
 
@@ -89,7 +84,7 @@ public class PosCertificateMetadata {
             try {
                 posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, certiPassword, message.getMessage("application.posledger.challenge.domain"));
             } catch (Exception e) {
-                //logger.error(e);
+                logger.error(e);
                 throw new RestResourceException(e.getLocalizedMessage());
             }
         }

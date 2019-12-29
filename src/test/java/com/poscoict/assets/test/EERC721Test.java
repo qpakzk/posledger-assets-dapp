@@ -13,8 +13,6 @@ import org.junit.runner.RunWith;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -29,12 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @Configuration
-@EnableAutoConfiguration
 @ComponentScan
 @ContextConfiguration(classes = SpringConfig.class)
 public class EERC721Test {
@@ -110,7 +106,7 @@ public class EERC721Test {
         signers = alice;
         eerc721.setCaller(alice);
         boolean result = eerc721.mint(tokenIdForEERC721, type, alice, pages, hash, signers, path, merkleroot);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -155,7 +151,7 @@ public class EERC721Test {
         }
 
         BigInteger balance = eerc721.balanceOf(alice, type);
-        assertThat(balance).isEqualTo(BigInteger.ONE);
+        assertEquals(balance, BigInteger.ONE);
     }
 
     @Test
@@ -202,7 +198,7 @@ public class EERC721Test {
         String index = "pages";
         eerc721.setCaller(alice);
         boolean result = eerc721.divide(tokenIdForEERC721, newtokenIdForEERC721s, values, index);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -265,14 +261,14 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertThat(alice).isEqualTo(owner);
+            assertEquals(alice, owner);
             if(alice.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
             }
 
-            assertThat(this.type).isEqualTo(type);
+            assertEquals(this.type, type);
             if(this.type.equals(type)) {
                 logger.info("query type true");
             }else {
@@ -280,35 +276,35 @@ public class EERC721Test {
             }
 
             this.signers = alice;
-            assertThat(this.signers).isEqualTo(signers.get(0));
+            assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
             }else {
                 logger.info("query signers fail");
             }
 
-            assertThat(this.hash).isEqualTo(hash);
+            assertEquals(this.hash, hash);
             if(this.hash.equals(hash)) {
                 logger.info("query hash true");
             }else {
                 logger.info("query hash fail");
             }
 
-            assertThat(this.pages).isEqualTo(pages);
+            assertEquals(this.pages, pages);
             if(this.pages == pages) {
                 logger.info("query pages true");
             }else {
                 logger.info("query pages fail");
             }
 
-            assertThat(this.path).isEqualTo(path);
+            assertEquals(this.path, path);
             if(this.path.equals(path)) {
                 logger.info("query path true");
             }else {
                 logger.info("query path fail");
             }
 
-            assertThat(this.merkleroot).isEqualTo(merkleroot);
+            assertEquals(this.merkleroot, merkleroot);
             if(this.merkleroot.equals(merkleroot)) {
                 logger.info("query merkleroot true");
             }else {
@@ -379,14 +375,14 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertThat(alice).isEqualTo(owner);
+            assertEquals(alice, owner);
             if(alice.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
             }
 
-            assertThat(this.type).isEqualTo(type);
+            assertEquals(this.type, type);
             if(this.type.equals(type)) {
                 logger.info("query type true");
             }else {
@@ -394,14 +390,14 @@ public class EERC721Test {
             }
 
             this.signers = alice;
-            assertThat(this.signers).isEqualTo(signers.get(0));
+            assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
             }else {
                 logger.info("query signers fail");
             }
 
-            assertThat(this.hash).isEqualTo(hash);
+            assertEquals(this.hash, hash);
             if(this.hash.equals(hash)) {
                 logger.info("query hash true");
             }else {
@@ -409,21 +405,21 @@ public class EERC721Test {
             }
 
             int value = Integer.parseInt(this.values[0]);
-            assertThat(value).isEqualTo(pages);
+            assertEquals(value, pages);
             if(value == pages) {
                 logger.info("query pages true");
             }else {
                 logger.info("query pages fail");
             }
 
-            assertThat(this.path).isEqualTo(path);
+            assertEquals(this.path, path);
             if(this.path.equals(path)) {
                 logger.info("query path true");
             }else {
                 logger.info("query path fail");
             }
 
-            assertThat(this.merkleroot).isEqualTo(merkleroot);
+            assertEquals(this.merkleroot, merkleroot);
             if(this.merkleroot.equals(merkleroot)) {
                 logger.info("query merkleroot true");
             }else {
@@ -494,14 +490,14 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertThat(alice).isEqualTo(owner);
+            assertEquals(alice, owner);
             if(alice.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
             }
 
-            assertThat(this.type).isEqualTo(type);
+            assertEquals(this.type, type);
             if(this.type.equals(type)) {
                 logger.info("query type true");
             }else {
@@ -509,14 +505,14 @@ public class EERC721Test {
             }
 
             this.signers = alice;
-            assertThat(this.signers).isEqualTo(signers.get(0));
+            assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
             }else {
                 logger.info("query signers fail");
             }
 
-            assertThat(this.hash).isEqualTo(hash);
+            assertEquals(this.hash, hash);
             if(this.hash.equals(hash)) {
                 logger.info("query hash true");
             }else {
@@ -524,21 +520,21 @@ public class EERC721Test {
             }
 
             int value = Integer.parseInt(this.values[1]);
-            assertThat(value).isEqualTo(pages);
+            assertEquals(value, pages);
             if(value == pages) {
                 logger.info("query pages true");
             }else {
                 logger.info("query pages fail");
             }
 
-            assertThat(this.path).isEqualTo(path);
+            assertEquals(this.path, path);
             if(this.path.equals(path)) {
                 logger.info("query path true");
             }else {
                 logger.info("query path fail");
             }
 
-            assertThat(this.merkleroot).isEqualTo(merkleroot);
+            assertEquals(this.merkleroot, merkleroot);
             if(this.merkleroot.equals(merkleroot)) {
                 logger.info("query merkleroot true");
             }else {
@@ -595,7 +591,7 @@ public class EERC721Test {
 
         eerc721.setCaller(alice);
         boolean result = eerc721.update(tokenIdForEERC721, index, attr);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -641,7 +637,7 @@ public class EERC721Test {
 
         eerc721.setCaller(alice);
         boolean result =eerc721.deactivate(tokenIdForEERC721);
-        assertThat(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -704,14 +700,14 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertThat(alice).isEqualTo(owner);
+            assertEquals(alice, owner);
             if(alice.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
             }
 
-            assertThat(this.type).isEqualTo(type);
+            assertEquals(this.type, type);
             if(this.type.equals(type)) {
                 logger.info("query type true");
             }else {
@@ -719,35 +715,35 @@ public class EERC721Test {
             }
 
             this.signers = alice;
-            assertThat(this.signers).isEqualTo(signers.get(0));
+            assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
             }else {
                 logger.info("query signers fail");
             }
 
-            assertThat(this.hash).isEqualTo(hash);
+            assertEquals(this.hash, hash);
             if(this.hash.equals(hash)) {
                 logger.info("query hash true");
             }else {
                 logger.info("query hash fail");
             }
 
-            assertThat(this.pages).isEqualTo(pages);
+            assertEquals(this.pages, pages);
             if(this.pages == pages) {
                 logger.info("query pages true");
             }else {
                 logger.info("query pages fail");
             }
 
-            assertThat(this.path).isEqualTo(path);
+            assertEquals(this.path, path);
             if(this.path.equals(path)) {
                 logger.info("query path true");
             }else {
                 logger.info("query path fail");
             }
 
-            assertThat(this.merkleroot).isEqualTo(merkleroot);
+            assertEquals(this.merkleroot, merkleroot);
             if(this.merkleroot.equals(merkleroot)) {
                 logger.info("query merkleroot true");
             }else {
@@ -823,14 +819,14 @@ public class EERC721Test {
                     String path = uriMap.get("path");
                     String merkleroot = uriMap.get("hash");
 
-                    assertThat(alice).isEqualTo(owner);
+                    assertEquals(alice, owner);
                     if (alice.equals(owner)) {
                         logger.info("query owner true");
                     } else {
                         logger.info("query owner fail");
                     }
 
-                    assertThat(this.type).isEqualTo(type);
+                    assertEquals(this.type, type);
                     if (this.type.equals(type)) {
                         logger.info("query type true");
                     } else {
@@ -838,35 +834,35 @@ public class EERC721Test {
                     }
 
                     this.signers = alice;
-                    assertThat(this.signers).isEqualTo(signers.get(0));
+                    assertEquals(this.signers, signers.get(0));
                     if (this.signers.equals(signers.get(0))) {
                         logger.info("query signers true");
                     } else {
                         logger.info("query signers fail");
                     }
 
-                    assertThat(this.hash).isEqualTo(hash);
+                    assertEquals(this.hash, hash);
                     if (this.hash.equals(hash)) {
                         logger.info("query hash true");
                     } else {
                         logger.info("query hash fail");
                     }
 
-                    assertThat(this.pages).isEqualTo(pages);
+                    assertEquals(this.pages, pages);
                     if (this.pages == pages) {
                         logger.info("query pages true");
                     } else {
                         logger.info("query pages fail");
                     }
 
-                    assertThat(this.path).isEqualTo(path);
+                    assertEquals(this.path, path);
                     if (this.path.equals(path)) {
                         logger.info("query path true");
                     } else {
                         logger.info("query path fail");
                     }
 
-                    assertThat(this.merkleroot).isEqualTo(merkleroot);
+                    assertEquals(this.merkleroot, merkleroot);
                     if (this.merkleroot.equals(merkleroot)) {
                         logger.info("query merkleroot true");
                     } else {
