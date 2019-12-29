@@ -53,7 +53,7 @@ public class EERC721Test {
     private MessageSourceAccessor message;
 
     private String alice;
-    private final BigInteger tokenId = BigInteger.ONE;
+    private final BigInteger tokenIdForEERC721 = BigInteger.ONE;
     private String type = "doc";
     private int pages = 100;
     private String hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
@@ -61,7 +61,7 @@ public class EERC721Test {
     private String path = "https://www.off-chain-storage.com";
     private String merkleroot = "558ad18828f6da6d471cdb1a3443f039a770e03617f163896980d914d643e4bc";
 
-    private BigInteger[] newTokenIds = { BigInteger.valueOf(2), BigInteger.valueOf(3) };
+    private BigInteger[] newtokenIdForEERC721s = { BigInteger.valueOf(2), BigInteger.valueOf(3) };
     private String values[] = {"40", "60"};
 
     private final static String CERT_PASSWARD = "1234";
@@ -109,7 +109,7 @@ public class EERC721Test {
 
         signers = alice;
         eerc721.setCaller(alice);
-        boolean result = eerc721.mint(tokenId, type, alice, pages, hash, signers, path, merkleroot);
+        boolean result = eerc721.mint(tokenIdForEERC721, type, alice, pages, hash, signers, path, merkleroot);
         assertThat(result).isEqualTo(true);
     }
 
@@ -201,7 +201,7 @@ public class EERC721Test {
 
         String index = "pages";
         eerc721.setCaller(alice);
-        boolean result = eerc721.divide(tokenId, newTokenIds, values, index);
+        boolean result = eerc721.divide(tokenIdForEERC721, newtokenIdForEERC721s, values, index);
         assertThat(result).isEqualTo(true);
     }
 
@@ -246,7 +246,7 @@ public class EERC721Test {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String result = eerc721.query(tokenId);
+        String result = eerc721.query(tokenIdForEERC721);
 
         if(result != null) {
             Map<String, Object> map =
@@ -360,7 +360,7 @@ public class EERC721Test {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String result = eerc721.query(newTokenIds[0]);
+        String result = eerc721.query(newtokenIdForEERC721s[0]);
 
         if(result != null) {
             Map<String, Object> map =
@@ -475,7 +475,7 @@ public class EERC721Test {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String result = eerc721.query(newTokenIds[1]);
+        String result = eerc721.query(newtokenIdForEERC721s[1]);
 
         if(result != null) {
             Map<String, Object> map =
@@ -594,7 +594,7 @@ public class EERC721Test {
         String index = "sigIds";
 
         eerc721.setCaller(alice);
-        boolean result = eerc721.update(tokenId, index, attr);
+        boolean result = eerc721.update(tokenIdForEERC721, index, attr);
         assertThat(result).isEqualTo(true);
     }
 
@@ -640,7 +640,7 @@ public class EERC721Test {
         }
 
         eerc721.setCaller(alice);
-        boolean result =eerc721.deactivate(tokenId);
+        boolean result =eerc721.deactivate(tokenIdForEERC721);
         assertThat(result).isEqualTo(true);
     }
 
@@ -685,7 +685,7 @@ public class EERC721Test {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String result = eerc721.query(tokenId);
+        String result = eerc721.query(tokenIdForEERC721);
 
         if(result != null) {
             Map<String, Object> map =
@@ -800,7 +800,7 @@ public class EERC721Test {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        List<String> histories = eerc721.queryHistory(tokenId);
+        List<String> histories = eerc721.queryHistory(tokenIdForEERC721);
 
         if (histories != null) {
             for (String history : histories) {

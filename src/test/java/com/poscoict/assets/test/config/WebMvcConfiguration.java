@@ -24,7 +24,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 	/**
 	 * JSP View Resolver 설정
 	 */
-	/*@Bean
+	@Bean
 	public ViewResolver viewResolver() {
 		InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
 		internalResourceViewResolver.setViewClass(JstlView.class);
@@ -33,19 +33,22 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 		internalResourceViewResolver.setOrder(1);
 		return internalResourceViewResolver;
 	}
-	
+
+	/*
 	@Bean
 	public ViewResolver beanNameViewResolver() {
 		BeanNameViewResolver beanNameViewResolver = new BeanNameViewResolver();
 		beanNameViewResolver.setOrder(0);
 		return beanNameViewResolver;
 	}
-	*/
+
+	 */
+
 	@Bean
 	public LoginInterceptor loginInterceptor() {
 		return new LoginInterceptor();
 	}
-	/*
+
 	@Bean("downloadView")
 	public DownloadView downloadView() {
 		return new DownloadView();
@@ -54,7 +57,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 	@Bean("fileDownloadView")
 	public FileDownloadView fileDownloadView() {
 		return new FileDownloadView();
-	}*/
+	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

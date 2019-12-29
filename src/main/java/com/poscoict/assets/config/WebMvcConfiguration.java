@@ -71,7 +71,20 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 		.excludePathPatterns("/")
 		.excludePathPatterns("/member/register/action")
 		.excludePathPatterns("/erc721/mint")
-		.excludePathPatterns("/member/register/action2");
+		.excludePathPatterns("/erc721/balanceOf")
+		.excludePathPatterns("/erc721/ownerOf")
+		.excludePathPatterns("/erc721/transferFrom")
+		.excludePathPatterns("/erc721/approve")
+		.excludePathPatterns("/erc721/getApproved")
+		.excludePathPatterns("/erc721/setApprovalForAll")
+		.excludePathPatterns("/erc721/isApprovedForAll")
+		.excludePathPatterns("/eerc721/mint")
+		.excludePathPatterns("/eerc721/balanceOf")
+		.excludePathPatterns("/eerc721/divide")
+		.excludePathPatterns("/eerc721/update")
+		.excludePathPatterns("/eerc721/deactivate")
+		.excludePathPatterns("/eerc721/query")
+		.excludePathPatterns("/eerc721/queryHistory");
 	}
 	
 	@Override
