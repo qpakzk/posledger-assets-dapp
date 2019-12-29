@@ -142,6 +142,83 @@ public class LoginControllerTest {
     }
 
     @Test
+    public void joinTest2() throws Exception {
+
+        String fileName = "./certForBob";
+
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        if (certfile.isEmpty()) {
+            logger.info("첨부 인증서 정보가 없습니다.");
+        }
+
+        PosCertificate posCertificate = null;
+
+        try {
+            posCertificate = (PosCertificate) objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean result = false;
+
+        try {
+            result = posCertificateService.verifyPosCertificatePassword(posCertificate, certiPassword);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta;// = new PosCertificateMeta();;
+
+        if (result) {
+
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, certiPassword, message.getMessage("application.posledger.challenge.domain"));
+            } catch(Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+
+            if (posCertificateMeta==null) {
+                throw new RestResourceException("블록체인에 저장된 인증서 정보가 없습니다.");
+            }
+
+            try {
+                UserVo certUser = userService.getUserByCertAddress(posCertificate.getAddress());
+
+                if (certUser!=null) throw new RestResourceException("이미 등록된 인증서입니다.");
+
+                //wallet create 체인코드 실행
+                boolean createWallet = erc20ChaincodeService.createWallet(posCertificateMeta);
+
+                if(createWallet == true) {
+                    UserVo user = new UserVo();
+
+                    user.setUserId(posCertificateMeta.getOwnerId());
+                    user.setOrgCode(posCertificateMeta.getOrgCode());
+                    user.setUserType(posCertificateMeta.getOwnerType());
+                    user.setCertAddress(posCertificate.getAddress());
+                    user.setDeviceAddress(posCertificateMeta.getDevices());
+                    user.setPushToken(pushToken);
+                    user.setRegistDate(DateUtil.getDateObject());
+
+                    userService.createUser(user);
+
+                } else {
+                    throw new RestResourceException("블록체인에 정상적으로 저장되지 않았습니다.");
+                }
+
+            } catch(Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+    }
+
+    @Test
     public void getPosCertificateMeta() throws Exception {
 
         String fileName = "./certForBob";

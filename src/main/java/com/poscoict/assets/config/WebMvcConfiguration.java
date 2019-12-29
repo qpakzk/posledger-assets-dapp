@@ -70,7 +70,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 		.excludePathPatterns("/index")
 		.excludePathPatterns("/")
 		.excludePathPatterns("/member/register/action")
-		.excludePathPatterns("/erc721/mint");
+		.excludePathPatterns("/erc721/mint")
+		.excludePathPatterns("/member/register/action2");
 	}
 	
 	@Override
