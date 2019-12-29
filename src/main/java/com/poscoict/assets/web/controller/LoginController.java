@@ -157,7 +157,7 @@ public class LoginController extends ExceptionHandleController {
 
 	}
 
-	@RequestMapping(value = "/ERC721/mint", method = RequestMethod.POST)
+	@RequestMapping(value = "/erc721/mint", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpResponse mint(@RequestParam(value = "pushToken", required = false) String pushToken,
 							 @RequestParam(value = "userType", required = false) String userType,
