@@ -156,11 +156,19 @@ public class LoginController extends ExceptionHandleController {
 
 	@RequestMapping(value="/ERC721/mint", method=RequestMethod.POST)
 	@ResponseBody
-	public HttpResponse mint(@RequestParam("certfile") MultipartFile certfile, HttpServletRequest request) throws RestResourceException, Exception {
+	public HttpResponse mint(@RequestParam(value="pushToken", required=false) String pushToken,
+							 @RequestParam(value="userType", required=false) String userType,
+							 @RequestParam(value="epPassword", required=false) String epPassword,
+							 @RequestParam(value="certiPassword", required=false) String certiPassword,
+							 @RequestParam("certfile") MultipartFile certfile, HttpServletRequest request) throws RestResourceException, Exception {
 
 		//String fileName = "./certForAlice";
 		//MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
+		if (certfile.isEmpty()) {
+			throw new RestResourceException("첨부 인증서 정보가 없습니다.");
+		}
+		
 		PosCertificate posCertificate = null;
 		try {
 			posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
