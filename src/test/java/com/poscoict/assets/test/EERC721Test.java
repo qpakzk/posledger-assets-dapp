@@ -2,7 +2,7 @@ package com.poscoict.assets.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poscoict.assets.chaincode.EERC721;
+import com.poscoict.posledger.chain.assets.chaincode.EERC721;
 import com.poscoict.assets.config.SpringConfig;
 import com.poscoict.assets.exception.RestResourceException;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;

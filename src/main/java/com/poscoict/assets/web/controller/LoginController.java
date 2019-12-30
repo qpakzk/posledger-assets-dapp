@@ -2,8 +2,8 @@ package com.poscoict.assets.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.poscoict.assets.chaincode.EERC721;
-import com.poscoict.assets.chaincode.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.EERC721;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

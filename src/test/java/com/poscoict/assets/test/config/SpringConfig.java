@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
-import com.poscoict.assets.chaincode.EERC721;
-import com.poscoict.assets.chaincode.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.*;
 import com.poscoict.posledger.chain.wallet.chaincode.ERC20ChaincodeService;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.logging.log4j.LogManager;

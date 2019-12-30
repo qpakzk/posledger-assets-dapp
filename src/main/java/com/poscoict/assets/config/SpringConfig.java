@@ -5,8 +5,7 @@ import java.nio.charset.Charset;
 
 import javax.sql.DataSource;
 
-import com.poscoict.assets.chaincode.EERC721;
-import com.poscoict.assets.chaincode.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.*;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
