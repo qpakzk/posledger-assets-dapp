@@ -27,6 +27,8 @@ public class EERC721 {
 
     private static final String BALANCE_OF_FUNCTION_NAME = "balanceOf";
 
+    private static final String TOKEN_IDS_OF_FUNCTION_NAME = "tokenIdsOf";
+
     private static final String DIVIDE_FUNCTION_NAME = "divide";
 
     private static final String UPDATE_FUNCTION_NAME = "setXAttr";
@@ -136,6 +138,46 @@ public class EERC721 {
 
         logger.info("balance: " + balanceBigInt.toString());
         return balanceBigInt;
+    }
+
+    public List<BigInteger> tokenIdsOf(String owner) throws Exception {
+        logger.info("---------------- tokenIdsOf SDK called ----------------");
+
+        List<BigInteger> tokenIds = new ArrayList<>();
+        String result = null;
+
+        try {
+            ChaincodeRequest chaincodeRequest = new ChaincodeRequest();
+            chaincodeRequest.setFunctionName(TOKEN_IDS_OF_FUNCTION_NAME);
+            chaincodeRequest.setChaincodeName(chaincodeId);
+            chaincodeRequest.setArgs(new String[] { owner });
+
+            Collection<ProposalResponse> responses = chaincodeProxy.queryByChainCode(chaincodeRequest);
+
+            for (ProposalResponse response : responses) {
+                if (response.getChaincodeActionResponsePayload() != null) {
+                    result =  response.getMessage();
+                }
+            }
+
+            result = result.substring(1);
+            result = result.substring(0, result.length() - 1);
+
+            String[] string = result.split(", ");
+            BigInteger[] bigInt = new BigInteger[string.length];
+            for (int i = 0; i < string.length; i++) {
+                int n = Integer.parseInt(string[i]);
+                bigInt[i] = BigInteger.valueOf(n);
+            }
+            tokenIds = Arrays.asList(bigInt);
+
+        } catch (Exception e) {
+            logger.error(e);
+            throw new Exception(e.getLocalizedMessage());
+        }
+
+        logger.info("balance: " + result);
+        return tokenIds;
     }
 
     public boolean deactivate(BigInteger tokenId) throws Exception {

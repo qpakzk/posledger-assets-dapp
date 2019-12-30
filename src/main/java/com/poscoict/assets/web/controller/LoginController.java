@@ -126,7 +126,6 @@ public class LoginController extends ExceptionHandleController {
 		}
 
 		PosCertificateMeta posCertificateMeta = new PosCertificateMeta();
-		;
 
 		if (result) {
 
@@ -864,6 +863,54 @@ public class LoginController extends ExceptionHandleController {
 
 		BigInteger balance = eerc721.balanceOf(alice, type);
 		return new HttpResponse(HttpResponse.success, String.valueOf(balance));
+	}
+
+	@RequestMapping(value = "/eerc721/tokenIdsOf", method = RequestMethod.POST)
+	@ResponseBody
+	public HttpResponse tokenIds(@RequestParam(value = "pushToken", required = false) String pushToken,
+								  @RequestParam(value = "userType", required = false) String userType,
+								  @RequestParam(value = "epPassword", required = false) String epPassword,
+								  @RequestParam(value = "certiPassword", required = false) String certiPassword,
+								  @RequestParam("certfile") MultipartFile certfile, HttpServletRequest request) throws RestResourceException, Exception {
+
+		PosCertificate posCertificate = null;
+		try {
+			posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+		} catch(Exception e) {
+			logger.error(e);
+			throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+		}
+
+		// 인증서 비밀번호 검증
+		boolean isPassward = false;
+
+		try {
+			isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, certiPassword);
+		} catch(Exception e) {
+			logger.error(e);
+			throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+		}
+
+		PosCertificateMeta posCertificateMeta = null;
+
+		if (isPassward) {
+			try {
+				posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, certiPassword, message.getMessage("application.posledger.challenge.domain"));
+			} catch (Exception e) {
+				logger.error(e);
+				throw new RestResourceException(e.getLocalizedMessage());
+			}
+		}
+
+		try {
+			alice = posCertificateMeta.getOwnerKey();
+		} catch (NullPointerException e) {
+			logger.error(e);
+			throw new NullPointerException(e.getLocalizedMessage());
+		}
+
+		List<BigInteger> tokenIds = eerc721.tokenIdsOf(alice);
+		return new HttpResponse(HttpResponse.success, tokenIds.toString());
 	}
 
 	@RequestMapping(value = "/eerc721/divide", method = RequestMethod.POST)

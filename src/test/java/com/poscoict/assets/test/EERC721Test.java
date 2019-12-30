@@ -48,7 +48,7 @@ public class EERC721Test {
     @Autowired
     private MessageSourceAccessor message;
 
-    private String alice;
+    private String david;
     private final BigInteger tokenIdForEERC721 = BigInteger.ONE;
     private String type = "doc";
     private int pages = 100;
@@ -64,7 +64,7 @@ public class EERC721Test {
 
     @Test
     public void mintTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -97,21 +97,21 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        signers = alice;
-        eerc721.setCaller(alice);
-        boolean result = eerc721.mint(tokenIdForEERC721, type, alice, pages, hash, signers, path, merkleroot);
+        signers = david;
+        eerc721.setCaller(david);
+        boolean result = eerc721.mint(tokenIdForEERC721, type, david, pages, hash, signers, path, merkleroot);
         assertEquals(result, true);
     }
 
     @Test
     public void balanceOfTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -144,19 +144,19 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger balance = eerc721.balanceOf(alice, type);
+        BigInteger balance = eerc721.balanceOf(david, type);
         assertEquals(balance, BigInteger.ONE);
     }
 
     @Test
     public void divideTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -189,21 +189,21 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
         String index = "pages";
-        eerc721.setCaller(alice);
+        eerc721.setCaller(david);
         boolean result = eerc721.divide(tokenIdForEERC721, newtokenIdForEERC721s, values, index);
         assertEquals(result, true);
     }
 
     @Test
-    public void queryTest() throws Exception {
-        String fileName = "./certForAlice";
+    public void tokenIdsOfTest() throws Exception {
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -236,7 +236,55 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        List<BigInteger> tokenIds = eerc721.tokenIdsOf(david);
+
+        assertEquals(tokenIds.get(0), BigInteger.ONE);
+        assertEquals(tokenIds.get(1), BigInteger.valueOf(2));
+        assertEquals(tokenIds.get(2), BigInteger.valueOf(3));
+    }
+
+    @Test
+    public void queryTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        try {
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
@@ -261,8 +309,8 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertEquals(alice, owner);
-            if(alice.equals(owner)) {
+            assertEquals(david, owner);
+            if(david.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
@@ -275,7 +323,7 @@ public class EERC721Test {
                 logger.info("query type fail");
             }
 
-            this.signers = alice;
+            this.signers = david;
             assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
@@ -317,7 +365,7 @@ public class EERC721Test {
 
     @Test
     public void queryNewToken0Test() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -350,7 +398,7 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
@@ -375,8 +423,8 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertEquals(alice, owner);
-            if(alice.equals(owner)) {
+            assertEquals(david, owner);
+            if(david.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
@@ -389,7 +437,7 @@ public class EERC721Test {
                 logger.info("query type fail");
             }
 
-            this.signers = alice;
+            this.signers = david;
             assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
@@ -432,7 +480,7 @@ public class EERC721Test {
 
     @Test
     public void queryNewToken1Test() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -465,7 +513,7 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
@@ -490,8 +538,8 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertEquals(alice, owner);
-            if(alice.equals(owner)) {
+            assertEquals(david, owner);
+            if(david.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
@@ -504,7 +552,7 @@ public class EERC721Test {
                 logger.info("query type fail");
             }
 
-            this.signers = alice;
+            this.signers = david;
             assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
@@ -547,7 +595,7 @@ public class EERC721Test {
 
     @Test
     public void updateTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -580,23 +628,23 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String attr = alice +" SigId";
+        String attr = david +" SigId";
         String index = "sigIds";
 
-        eerc721.setCaller(alice);
+        eerc721.setCaller(david);
         boolean result = eerc721.update(tokenIdForEERC721, index, attr);
         assertEquals(result, true);
     }
 
     @Test
     public void deactivateTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -629,20 +677,20 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        eerc721.setCaller(alice);
+        eerc721.setCaller(david);
         boolean result =eerc721.deactivate(tokenIdForEERC721);
         assertEquals(result, true);
     }
 
     @Test
     public void afterUpdateAndDeactivateQueryTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -675,7 +723,7 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
@@ -700,8 +748,8 @@ public class EERC721Test {
             String path = uriMap.get("path");
             String merkleroot = uriMap.get("hash");
 
-            assertEquals(alice, owner);
-            if(alice.equals(owner)) {
+            assertEquals(david, owner);
+            if(david.equals(owner)) {
                 logger.info("query owner true");
             }else {
                 logger.info("query owner fail");
@@ -714,7 +762,7 @@ public class EERC721Test {
                 logger.info("query type fail");
             }
 
-            this.signers = alice;
+            this.signers = david;
             assertEquals(this.signers, signers.get(0));
             if(this.signers.equals(signers.get(0))) {
                 logger.info("query signers true");
@@ -756,7 +804,7 @@ public class EERC721Test {
 
     @Test
     public void queryHistoryTest() throws Exception {
-        String fileName = "./certForAlice";
+        String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
@@ -790,7 +838,7 @@ public class EERC721Test {
         }
 
         try {
-            alice = posCertificateMeta.getOwnerKey();
+            david = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
             logger.error(e);
             throw new NullPointerException(e.getLocalizedMessage());
@@ -819,8 +867,8 @@ public class EERC721Test {
                     String path = uriMap.get("path");
                     String merkleroot = uriMap.get("hash");
 
-                    assertEquals(alice, owner);
-                    if (alice.equals(owner)) {
+                    assertEquals(david, owner);
+                    if (david.equals(owner)) {
                         logger.info("query owner true");
                     } else {
                         logger.info("query owner fail");
@@ -833,7 +881,7 @@ public class EERC721Test {
                         logger.info("query type fail");
                     }
 
-                    this.signers = alice;
+                    this.signers = david;
                     assertEquals(this.signers, signers.get(0));
                     if (this.signers.equals(signers.get(0))) {
                         logger.info("query signers true");
