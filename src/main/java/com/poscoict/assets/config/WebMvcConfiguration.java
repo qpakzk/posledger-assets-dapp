@@ -84,7 +84,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 		.excludePathPatterns("/eerc721/update")
 		.excludePathPatterns("/eerc721/deactivate")
 		.excludePathPatterns("/eerc721/query")
-		.excludePathPatterns("/eerc721/queryHistory");
+		.excludePathPatterns("/eerc721/queryHistory")
+		.excludePathPatterns("/eerc721/tokenIdsOf");
+
 	}
 	
 	@Override
