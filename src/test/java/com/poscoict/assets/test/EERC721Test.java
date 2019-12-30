@@ -49,7 +49,7 @@ public class EERC721Test {
     private MessageSourceAccessor message;
 
     private String david;
-    private final BigInteger tokenIdForEERC721 = BigInteger.ONE;
+    private final BigInteger tokenIdForEERC721 = BigInteger.valueOf(160);
     private String type = "doc";
     private int pages = 100;
     private String hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
@@ -57,7 +57,7 @@ public class EERC721Test {
     private String path = "https://www.off-chain-storage.com";
     private String merkleroot = "558ad18828f6da6d471cdb1a3443f039a770e03617f163896980d914d643e4bc";
 
-    private BigInteger[] newtokenIdForEERC721s = { BigInteger.valueOf(2), BigInteger.valueOf(3) };
+    private BigInteger[] newtokenIdForEERC721s = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
     private String values[] = {"40", "60"};
 
     private final static String CERT_PASSWARD = "1234";
@@ -244,9 +244,9 @@ public class EERC721Test {
 
         List<BigInteger> tokenIds = eerc721.tokenIdsOf(david);
 
-        assertEquals(tokenIds.get(0), BigInteger.ONE);
-        assertEquals(tokenIds.get(1), BigInteger.valueOf(2));
-        assertEquals(tokenIds.get(2), BigInteger.valueOf(3));
+        assertEquals(tokenIds.get(0), BigInteger.valueOf(160));
+        assertEquals(tokenIds.get(1), BigInteger.valueOf(161));
+        assertEquals(tokenIds.get(2), BigInteger.valueOf(162));
     }
 
     @Test
