@@ -7,6 +7,7 @@ import com.poscoict.assets.exception.RestResourceException;
 import com.poscoict.assets.service.UserService;
 import com.poscoict.assets.web.ExceptionHandleController;
 import com.poscoict.assets.web.HttpResponse;
+import com.poscoict.posledger.chain.assets.chaincode.XNFT;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
@@ -24,7 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class EERC721Controller extends ExceptionHandleController {
@@ -47,6 +50,9 @@ public class EERC721Controller extends ExceptionHandleController {
 
     @Autowired
     private EERC721 eerc721;
+
+    @Autowired
+    private XNFT xnft;
 
     @RequestMapping(value = "/eerc721/mint", method = RequestMethod.POST)
     @ResponseBody
@@ -103,8 +109,17 @@ public class EERC721Controller extends ExceptionHandleController {
         }
 
         signers = caller;
-        eerc721.setCaller(caller);
-        boolean result = eerc721.mint(tokenId, type, caller, pages, hash, signers, path, merkleroot);
+        xnft.setCaller(caller);
+        Map<String, Object> xattr = new HashMap<>();
+        xattr.put("pages", pages);
+        xattr.put("hash", hash);
+        xattr.put("signers", signers);
+
+        Map<String, String> uri = new HashMap<>();
+        uri.put("path", path);
+        uri.put("hash", merkleroot);
+
+        boolean result = xnft.mint(tokenId, type, caller, xattr, uri);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
     }

@@ -2,11 +2,13 @@ package com.poscoict.assets.web.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poscoict.posledger.chain.assets.chaincode.BaseNFT;
 import com.poscoict.posledger.chain.assets.chaincode.ERC721;
 import com.poscoict.assets.exception.RestResourceException;
 import com.poscoict.assets.service.UserService;
 import com.poscoict.assets.web.ExceptionHandleController;
 import com.poscoict.assets.web.HttpResponse;
+import com.poscoict.posledger.chain.assets.chaincode.XNFT;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
@@ -46,6 +48,9 @@ public class ERC721Controller extends ExceptionHandleController {
 
     @Autowired
     private ERC721 erc721;
+
+    @Autowired
+    private BaseNFT baseNFT;
 
     @RequestMapping(value = "/erc721/mint", method = RequestMethod.POST)
     @ResponseBody
@@ -95,8 +100,8 @@ public class ERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(caller);
-        boolean result = erc721.mint(tokenId, caller);
+        baseNFT.setCaller(caller);
+        boolean result = baseNFT.mint(tokenId, caller);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
     }
