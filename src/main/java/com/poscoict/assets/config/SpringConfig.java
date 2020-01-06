@@ -65,12 +65,12 @@ import redis.clients.jedis.JedisPoolConfig;
 @ComponentScan(basePackages = {"com.poscoict.assets.service", "com.poscoict.assets.persistence"})
 @PropertySource(value = {"classpath:application.properties", "classpath:datasource.properties"})
 public class SpringConfig {
-	
+
 	private static final Logger logger = LogManager.getLogger(SpringConfig.class);
 
 	@Autowired
 	private Environment env;
-	
+
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -106,15 +106,15 @@ public class SpringConfig {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 
-	@Bean(name="messageSource")
+	@Bean(name = "messageSource")
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 		messageSource.setBasenames("classpath:application");
 		messageSource.setDefaultEncoding("UTF-8");
 		return messageSource;
 	}
-	
-	@Bean(name="message")
+
+	@Bean(name = "message")
 	public MessageSourceAccessor messageSourceAccessor(MessageSource messageSource) {
 		return new MessageSourceAccessor(messageSource);
 	}
@@ -123,73 +123,73 @@ public class SpringConfig {
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
-	
+
 	@Bean
 	public ChaincodeProxy chaincodeProxy() throws Exception {
 		return new ChaincodeExecutor(fabricService());
 	}
-	
+
 	@Bean
 	public PosledgerConfig config() throws Exception {
 		return (new YamlConfigurer(env.getProperty("application.posledger.config"))).getPosledgerConfig();
 	}
-	
+
 	@Bean
 	public SignClient signClient() throws Exception {
 		return new SignClient(env.getProperty("application.posledger.sign.private.domain"), env.getProperty("application.posledger.sign.client.id"), env.getProperty("application.posledger.sign.client.secret"), env.getProperty("application.posledger.sign.client.domain"));
 	}
-	
+
 	@Bean
 	public PosCertificateService posCertificateService() throws Exception {
 		return new ECDSACertificateService(posSign(), symmetryCipher(), objectMapper(), signClient(), challengeService());
 	}
-	
+
 	@Bean
 	public SymmetryCipher symmetryCipher() throws Exception {
 		return new AesSymmetryCipher();
 	}
-	
+
 	@Bean
 	public PosSign posSign() throws Exception {
 		return new ECDSA();
 	}
-	
+
 	@Bean
 	public ChallengeService challengeService() throws Exception {
 		ChallengeService challengeService = new BasicChallengeService();
 		challengeService.changeCertificate(env.getProperty("application.posledger.challenge.public.key"));
 		return challengeService;
 	}
-	
+
 	@Bean(destroyMethod = "shutdownChannel")
 	public FabricService fabricService() throws Exception {
-		
+
 		PosledgerConfig config = config();
-		
+
 		UserContextResolver userContextResolver = new UserContextResolverRedis(jedisPool());
-		
+
 		UserContext adminUserContext = new UserContext();
 		adminUserContext.setName(config.getAdminName());
 		adminUserContext.setAffiliation(config.getOrgName());
 		adminUserContext.setMspId(config.getOrgMsp());
-		
+
 		CryptoSuiteBuilder cryptoSuiteBuilder = new CryptoSuiteBuilder();
-		
+
 		MembershipService membershipService = new FabricCaService(cryptoSuiteBuilder, config.getCaUrl(), null, adminUserContext, userContextResolver);
-		
+
 		UserContext userContext = membershipService.getUserContext(config);
-		
+
 		logger.info("fabric user : " + userContext);
-		
+
 		// fabric 서비스 생성
 		FabricService fabricService = new FabricServiceBuilder(cryptoSuiteBuilder, userContext, config);
-		
+
 		return fabricService;
 	}
-	
+
 	@Bean(destroyMethod = "close")
 	public JedisPool jedisPool() throws Exception {
-		
+
 		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		jedisPoolConfig.setMaxWaitMillis(3000);
 		jedisPoolConfig.setMaxTotal(10);
@@ -203,29 +203,29 @@ public class SpringConfig {
 
 		// Jedis Pool
 		JedisPool jedisPool = new JedisPool(jedisPoolConfig, env.getProperty("application.redis.host"), Integer.parseInt(env.getProperty("application.redis.port")), 1000);
-		
+
 		logger.info("JedisPool is initialized.");
-		
+
 		return jedisPool;
 	}
-	
+
 	@Bean
 	public StringHttpMessageConverter stringHttpMessageConverter() {
 		return new StringHttpMessageConverter();
 	}
-	
+
 	@Bean
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
 		return new MappingJackson2HttpMessageConverter(objectMapper);
 	}
-	
+
 	@Bean
 	public FormHttpMessageConverter formHttpMessageConverter() {
 		FormHttpMessageConverter formHttpMessageConverter = new FormHttpMessageConverter();
 		formHttpMessageConverter.setCharset(Charset.forName("UTF-8"));
 		return formHttpMessageConverter;
 	}
-	
+
 	@Bean
 	public MultipartResolver multipartResolver() throws IOException {
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
@@ -234,7 +234,7 @@ public class SpringConfig {
 		multipartResolver.setMaxUploadSize(10000000);
 		return multipartResolver;
 	}
-	
+
 	@Bean
 	public ERC20ChaincodeService erc20ChaincodeService() throws Exception {
 		return new ERC20ChaincodeService(chaincodeProxy(), objectMapper(), fabricService());
@@ -242,11 +242,26 @@ public class SpringConfig {
 
 	@Bean
 	public ERC721 erc721() throws Exception {
-		return new ERC721(chaincodeProxy(), objectMapper(), fabricService());
+		return new ERC721(chaincodeProxy());
+	}
+
+	@Bean
+	public BaseNFT baseNFT() throws Exception {
+		return new BaseNFT(chaincodeProxy(), objectMapper());
 	}
 
 	@Bean
 	public EERC721 eerc721() throws Exception {
-		return new EERC721(chaincodeProxy(), objectMapper(), fabricService());
+		return new EERC721(chaincodeProxy(), objectMapper());
+	}
+
+	@Bean
+	public XNFT xnft() throws Exception {
+		return new XNFT(chaincodeProxy(), objectMapper());
+	}
+
+	@Bean
+	public XType xType() throws Exception {
+		return new XType(chaincodeProxy(), objectMapper());
 	}
 }

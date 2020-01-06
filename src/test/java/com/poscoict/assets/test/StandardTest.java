@@ -2,6 +2,7 @@ package com.poscoict.assets.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poscoict.posledger.chain.assets.chaincode.BaseNFT;
 import com.poscoict.posledger.chain.assets.chaincode.ERC721;
 import com.poscoict.assets.config.SpringConfig;
 import com.poscoict.assets.exception.RestResourceException;
@@ -29,11 +30,14 @@ import static org.junit.Assert.assertEquals;
 @Configuration
 @ComponentScan
 @ContextConfiguration(classes = SpringConfig.class)
-public class ERC721Test {
-    private static final Logger logger = LogManager.getLogger(ERC721Test.class);
+public class StandardTest {
+    private static final Logger logger = LogManager.getLogger(StandardTest.class);
 
     @Autowired
     private ERC721 erc721;
+
+    @Autowired
+    private BaseNFT baseNFT;
 
     @Autowired
     private PosCertificateService posCertificateService;
@@ -92,9 +96,54 @@ public class ERC721Test {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(alice);
-        boolean result = erc721.mint(tokenId, alice);
+        baseNFT.setCaller(alice);
+        boolean result = baseNFT.mint(tokenId, alice);
         assertEquals(result, true);
+    }
+
+    @Test
+    public void getTypeTest() throws Exception {
+        String fileName = "./certForAlice";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        try {
+            alice = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        String type = baseNFT.getType(tokenId);
+        assertEquals(type, "base");
     }
 
     @Test
@@ -661,6 +710,98 @@ public class ERC721Test {
         }
 
         boolean result = erc721.isApprovedForAll(bob, david);
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void mintForBurnTest() throws Exception {
+        String fileName = "./certForCarol";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        try {
+            carol = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        baseNFT.setCaller(carol);
+        boolean result = baseNFT.mint(BigInteger.ONE, carol);
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void burnTest() throws Exception {
+        String fileName = "./certForCarol";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        try {
+            carol = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        baseNFT.setCaller(carol);
+        boolean result = baseNFT.burn(BigInteger.ONE);
         assertEquals(result, true);
     }
 }

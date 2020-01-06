@@ -258,11 +258,26 @@ public class SpringConfig {
 
 	@Bean
 	public ERC721 erc721() throws Exception {
-		return new ERC721(chaincodeProxy(), objectMapper(), fabricService());
+		return new ERC721(chaincodeProxy());
+	}
+
+	@Bean
+	public BaseNFT baseNFT() throws Exception {
+		return new BaseNFT(chaincodeProxy(), objectMapper());
 	}
 
 	@Bean
 	public EERC721 eerc721() throws Exception {
-		return new EERC721(chaincodeProxy(), objectMapper(), fabricService());
+		return new EERC721(chaincodeProxy(), objectMapper());
+	}
+
+	@Bean
+	public XNFT xnft() throws Exception {
+		return new XNFT(chaincodeProxy(), objectMapper());
+	}
+
+	@Bean
+	public XType xType() throws Exception {
+		return new XType(chaincodeProxy(), objectMapper());
 	}
 }
