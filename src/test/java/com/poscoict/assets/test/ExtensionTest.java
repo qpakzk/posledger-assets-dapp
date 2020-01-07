@@ -2,11 +2,9 @@ package com.poscoict.assets.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poscoict.posledger.chain.assets.chaincode.EERC721;
+import com.poscoict.posledger.chain.assets.chaincode.extension.*;
 import com.poscoict.assets.config.SpringConfig;
 import com.poscoict.assets.exception.RestResourceException;
-import com.poscoict.posledger.chain.assets.chaincode.XNFT;
-import com.poscoict.posledger.chain.assets.chaincode.XType;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;

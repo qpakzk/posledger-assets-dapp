@@ -2,13 +2,11 @@ package com.poscoict.assets.web.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poscoict.posledger.chain.assets.chaincode.BaseNFT;
-import com.poscoict.posledger.chain.assets.chaincode.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.standard.*;
 import com.poscoict.assets.exception.RestResourceException;
 import com.poscoict.assets.service.UserService;
 import com.poscoict.assets.web.ExceptionHandleController;
 import com.poscoict.assets.web.HttpResponse;
-import com.poscoict.posledger.chain.assets.chaincode.XNFT;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;

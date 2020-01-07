@@ -7,7 +7,11 @@ import java.util.Arrays;
 
 import javax.sql.DataSource;
 
-import com.poscoict.posledger.chain.assets.chaincode.*;
+import com.poscoict.posledger.chain.assets.chaincode.extension.EERC721;
+import com.poscoict.posledger.chain.assets.chaincode.extension.XNFT;
+import com.poscoict.posledger.chain.assets.chaincode.extension.XType;
+import com.poscoict.posledger.chain.assets.chaincode.standard.BaseNFT;
+import com.poscoict.posledger.chain.assets.chaincode.standard.ERC721;
 import com.poscoict.posledger.chain.wallet.chaincode.ERC20ChaincodeService;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.logging.log4j.LogManager;
@@ -263,12 +267,12 @@ public class SpringConfig {
 
 	@Bean
 	public BaseNFT baseNFT() throws Exception {
-		return new BaseNFT(chaincodeProxy(), objectMapper());
+		return new BaseNFT(chaincodeProxy());
 	}
 
 	@Bean
 	public EERC721 eerc721() throws Exception {
-		return new EERC721(chaincodeProxy(), objectMapper());
+		return new EERC721(chaincodeProxy());
 	}
 
 	@Bean
