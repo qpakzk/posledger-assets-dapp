@@ -7,6 +7,7 @@ import com.poscoict.assets.exception.RestResourceException;
 import com.poscoict.assets.service.UserService;
 import com.poscoict.assets.web.ExceptionHandleController;
 import com.poscoict.assets.web.HttpResponse;
+import com.poscoict.posledger.chain.assets.chaincode.util.Manager;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
@@ -49,6 +50,8 @@ public class ERC721Controller extends ExceptionHandleController {
 
     @Autowired
     private BaseNFT baseNFT;
+
+    private String chaincodeId = "assetscc0";
 
     @RequestMapping(value = "/erc721/mint", method = RequestMethod.POST)
     @ResponseBody
@@ -98,7 +101,8 @@ public class ERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        baseNFT.setCaller(caller);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(caller);
         boolean result = baseNFT.mint(tokenId, caller);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -140,6 +144,7 @@ public class ERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         BigInteger balance = erc721.balanceOf(owner);
         return new HttpResponse(HttpResponse.success, String.valueOf(balance));
     }
@@ -180,6 +185,7 @@ public class ERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String owner = erc721.ownerOf(tokenId);
         return new HttpResponse(HttpResponse.success, owner);
     }
@@ -234,7 +240,8 @@ public class ERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(caller);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(caller);
         boolean result = erc721.transferFrom(from, to, tokenId);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -289,7 +296,8 @@ public class ERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(caller);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(caller);
         boolean result = erc721.approve(approved, tokenId);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -344,7 +352,8 @@ public class ERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(caller);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(caller);
         boolean result = erc721.setApprovalForAll(operator, approved);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -385,6 +394,7 @@ public class ERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = erc721.getApproved(tokenId);
 
         return new HttpResponse(HttpResponse.success, result);
@@ -431,6 +441,7 @@ public class ERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         boolean result = erc721.isApprovedForAll(owner, operator);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));

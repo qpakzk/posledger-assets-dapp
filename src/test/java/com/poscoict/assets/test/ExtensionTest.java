@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poscoict.posledger.chain.assets.chaincode.extension.*;
 import com.poscoict.assets.config.SpringConfig;
 import com.poscoict.assets.exception.RestResourceException;
+import com.poscoict.posledger.chain.assets.chaincode.util.Manager;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
@@ -50,6 +51,8 @@ public class ExtensionTest {
 
     @Autowired
     private MessageSourceAccessor message;
+
+    private String chaincodeId = "assetscc0";
 
     private String david;
     private final BigInteger tokenIdForEERC721 = BigInteger.valueOf(160);
@@ -109,7 +112,8 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        xType.setCaller(david);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
 
         String docType = "doc";
         Map<String, List<String>> xattr = new HashMap<>();
@@ -178,6 +182,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         Map<String, List<String>> xattr = xType.getTokenType(type);
 
         assertEquals(xattr.containsKey("hash"), true);
@@ -227,6 +232,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         List<String> types = xType.tokenTypesOf();
 
         assertEquals(types.size(), 2);
@@ -275,7 +281,8 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        xnft.setCaller(david);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
 
         Map<String, Object> xattr = new HashMap<>();
         xattr.put("pages", pages);
@@ -331,6 +338,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         BigInteger balance = eerc721.balanceOf(david, type);
         assertEquals(balance, BigInteger.ONE);
     }
@@ -376,8 +384,9 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String index = "pages";
-        eerc721.setCaller(david);
+        Manager.setCaller(david);
         boolean result = eerc721.divide(tokenIdForEERC721, newtokenIdForEERC721s, values, index);
         assertEquals(result, true);
     }
@@ -423,6 +432,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         List<BigInteger> tokenIds = eerc721.tokenIdsOf(david);
 
         assertEquals(tokenIds.get(0), BigInteger.valueOf(160));
@@ -471,6 +481,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = eerc721.query(tokenIdForEERC721);
 
         if(result != null) {
@@ -598,6 +609,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = eerc721.query(newtokenIdForEERC721s[0]);
 
         if(result != null) {
@@ -726,6 +738,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = eerc721.query(newtokenIdForEERC721s[1]);
 
         if(result != null) {
@@ -857,7 +870,8 @@ public class ExtensionTest {
         String attr = david +" SigId";
         String index = "sigIds";
 
-        eerc721.setCaller(david);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
         boolean result = eerc721.update(tokenIdForEERC721, index, attr);
         assertEquals(result, true);
     }
@@ -903,7 +917,8 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        eerc721.setCaller(david);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
         boolean result =eerc721.deactivate(tokenIdForEERC721);
         assertEquals(result, true);
     }
@@ -949,6 +964,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = eerc721.query(tokenIdForEERC721);
 
         if(result != null) {
@@ -1077,6 +1093,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         List<String> histories = eerc721.queryHistory(tokenIdForEERC721);
 
         if (histories != null) {

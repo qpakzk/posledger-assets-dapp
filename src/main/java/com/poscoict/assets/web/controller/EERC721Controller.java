@@ -8,6 +8,7 @@ import com.poscoict.assets.web.ExceptionHandleController;
 import com.poscoict.assets.web.HttpResponse;
 import com.poscoict.posledger.chain.assets.chaincode.extension.EERC721;
 import com.poscoict.posledger.chain.assets.chaincode.extension.XNFT;
+import com.poscoict.posledger.chain.assets.chaincode.util.Manager;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
@@ -53,6 +54,8 @@ public class EERC721Controller extends ExceptionHandleController {
 
     @Autowired
     private XNFT xnft;
+
+    private String chaincodeId = "assetscc0";
 
     @RequestMapping(value = "/eerc721/mint", method = RequestMethod.POST)
     @ResponseBody
@@ -108,8 +111,9 @@ public class EERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         signers = caller;
-        xnft.setCaller(caller);
+        Manager.setCaller(caller);
         Map<String, Object> xattr = new HashMap<>();
         xattr.put("pages", pages);
         xattr.put("hash", hash);
@@ -160,6 +164,7 @@ public class EERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         BigInteger balance = eerc721.balanceOf(owner, type);
         return new HttpResponse(HttpResponse.success, String.valueOf(balance));
     }
@@ -199,6 +204,7 @@ public class EERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         List<BigInteger> tokenIds = eerc721.tokenIdsOf(owner);
         return new HttpResponse(HttpResponse.success, tokenIds.toString());
     }
@@ -251,10 +257,11 @@ public class EERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String index = "pages";
         BigInteger[] newtokenIdForEERC721s = { firstNewTokenId, secondNewTokenId };
         String[] values = { firstValue, secondValue };
-        eerc721.setCaller(caller);
+        Manager.setCaller(caller);
         boolean result = eerc721.divide(tokenId, newtokenIdForEERC721s, values, index);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -296,6 +303,7 @@ public class EERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = eerc721.query(tokenId);
 
         return new HttpResponse(HttpResponse.success, result);
@@ -346,7 +354,8 @@ public class EERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        eerc721.setCaller(caller);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(caller);
         boolean result = eerc721.update(tokenId, index, attr);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -395,7 +404,8 @@ public class EERC721Controller extends ExceptionHandleController {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        eerc721.setCaller(caller);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(caller);
         boolean result = eerc721.deactivate(tokenId);
 
         return new HttpResponse(HttpResponse.success, String.valueOf(result));
@@ -437,6 +447,7 @@ public class EERC721Controller extends ExceptionHandleController {
             }
         }
 
+        Manager.setChaincodeId(chaincodeId);
         List<String> histories = eerc721.queryHistory(tokenId);
         String result = "";
         if (histories != null) {

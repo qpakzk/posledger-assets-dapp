@@ -6,6 +6,7 @@ import com.poscoict.assets.config.SpringConfig;
 import com.poscoict.assets.exception.RestResourceException;
 import com.poscoict.posledger.chain.assets.chaincode.standard.BaseNFT;
 import com.poscoict.posledger.chain.assets.chaincode.standard.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.util.Manager;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
@@ -47,6 +48,8 @@ public class StandardTest {
 
     @Autowired
     private MessageSourceAccessor message;
+
+    private String chaincodeId = "assetscc0";
 
     private String alice;
     private String bob;
@@ -96,7 +99,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        baseNFT.setCaller(alice);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(alice);
         boolean result = baseNFT.mint(tokenId, alice);
         assertEquals(result, true);
     }
@@ -142,6 +146,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String type = baseNFT.getType(tokenId);
         assertEquals(type, "base");
     }
@@ -187,6 +192,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         BigInteger balance = erc721.balanceOf(alice);
         assertEquals(balance, BigInteger.ONE);
     }
@@ -232,6 +238,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String owner = erc721.ownerOf(tokenId);
         assertEquals(owner, alice);
     }
@@ -318,7 +325,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(alice);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(alice);
         boolean result = erc721.transferFrom(alice, bob, tokenId);
         assertEquals(result, true);
     }
@@ -364,7 +372,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(alice);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(alice);
         BigInteger result = erc721.balanceOf(alice);
         assertEquals(result, BigInteger.ZERO);
     }
@@ -410,6 +419,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = erc721.ownerOf(tokenId);
         assertEquals(result, bob);
     }
@@ -494,7 +504,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(bob);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(bob);
         boolean result = erc721.approve(carol, tokenId);
         assertEquals(result, true);
     }
@@ -540,6 +551,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         String result = erc721.getApproved(tokenId);
         assertEquals(result, carol);
     }
@@ -624,7 +636,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        erc721.setCaller(bob);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(bob);
         boolean result = erc721.setApprovalForAll(david,true);
         assertEquals(result, true); //(result).isEqualTo(true);
     }
@@ -709,6 +722,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        Manager.setChaincodeId(chaincodeId);
         boolean result = erc721.isApprovedForAll(bob, david);
         assertEquals(result, true);
     }
@@ -754,7 +768,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        baseNFT.setCaller(carol);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(carol);
         boolean result = baseNFT.mint(BigInteger.ONE, carol);
         assertEquals(result, true);
     }
@@ -800,7 +815,8 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        baseNFT.setCaller(carol);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(carol);
         boolean result = baseNFT.burn(BigInteger.ONE);
         assertEquals(result, true);
     }
