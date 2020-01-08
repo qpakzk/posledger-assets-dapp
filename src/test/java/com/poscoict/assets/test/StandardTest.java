@@ -51,11 +51,6 @@ public class StandardTest {
 
     private String chaincodeId = "assetscc0";
 
-    private String alice;
-    private String bob;
-    private String carol;
-    private String david;
-    private final BigInteger tokenId = BigInteger.ZERO;
     private final static String CERT_PASSWARD = "1234";
 
     @Test
@@ -92,6 +87,7 @@ public class StandardTest {
             }
         }
 
+        String alice;
         try {
             alice = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -99,9 +95,11 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        BigInteger id = BigInteger.ZERO;
+
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(alice);
-        boolean result = baseNFT.mint(tokenId, alice);
+        boolean result = baseNFT.mint(id, alice);
         assertEquals(result, true);
     }
 
@@ -139,15 +137,10 @@ public class StandardTest {
             }
         }
 
-        try {
-            alice = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
+        BigInteger id = BigInteger.ZERO;
 
         Manager.setChaincodeId(chaincodeId);
-        String type = baseNFT.getType(tokenId);
+        String type = baseNFT.getType(id);
         assertEquals(type, "base");
     }
 
@@ -185,6 +178,7 @@ public class StandardTest {
             }
         }
 
+        String alice;
         try {
             alice = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -231,6 +225,8 @@ public class StandardTest {
             }
         }
 
+        String alice;
+        BigInteger id = BigInteger.ZERO;
         try {
             alice = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -239,7 +235,7 @@ public class StandardTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        String owner = erc721.ownerOf(tokenId);
+        String owner = erc721.ownerOf(id);
         assertEquals(owner, alice);
     }
 
@@ -278,6 +274,7 @@ public class StandardTest {
             }
         }
 
+        String alice;
         try {
             alice = posCertificateMetaForAlice.getOwnerKey();
         } catch (NullPointerException e) {
@@ -318,6 +315,7 @@ public class StandardTest {
             }
         }
 
+        String bob;
         try {
             bob = posCertificateMetaForBob.getOwnerKey();
         } catch (NullPointerException e) {
@@ -325,9 +323,11 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        BigInteger id = BigInteger.ZERO;
+
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(alice);
-        boolean result = erc721.transferFrom(alice, bob, tokenId);
+        boolean result = erc721.transferFrom(alice, bob, id);
         assertEquals(result, true);
     }
 
@@ -365,6 +365,7 @@ public class StandardTest {
             }
         }
 
+        String alice;
         try {
             alice = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -412,6 +413,7 @@ public class StandardTest {
             }
         }
 
+        String bob;
         try {
             bob = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -419,8 +421,10 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        BigInteger id = BigInteger.ZERO;
+
         Manager.setChaincodeId(chaincodeId);
-        String result = erc721.ownerOf(tokenId);
+        String result = erc721.ownerOf(id);
         assertEquals(result, bob);
     }
 
@@ -458,6 +462,7 @@ public class StandardTest {
             }
         }
 
+        String bob;
         try {
             bob = posCertificateMetaForBob.getOwnerKey();
         } catch (NullPointerException e) {
@@ -497,6 +502,7 @@ public class StandardTest {
             }
         }
 
+        String carol;
         try {
             carol = posCertificateMetaForCarol.getOwnerKey();
         } catch (NullPointerException e) {
@@ -504,9 +510,11 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        BigInteger id = BigInteger.ZERO;
+
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(bob);
-        boolean result = erc721.approve(carol, tokenId);
+        boolean result = erc721.approve(carol, id);
         assertEquals(result, true);
     }
 
@@ -544,6 +552,7 @@ public class StandardTest {
             }
         }
 
+        String carol;
         try {
             carol = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -551,8 +560,10 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        BigInteger id = BigInteger.ZERO;
+
         Manager.setChaincodeId(chaincodeId);
-        String result = erc721.getApproved(tokenId);
+        String result = erc721.getApproved(id);
         assertEquals(result, carol);
     }
 
@@ -590,6 +601,7 @@ public class StandardTest {
             }
         }
 
+        String bob;
         try {
             bob = posCertificateMetaForBob.getOwnerKey();
         } catch (NullPointerException e) {
@@ -629,6 +641,7 @@ public class StandardTest {
             }
         }
 
+        String david;
         try {
             david = posCertificateMetaForDavid.getOwnerKey();
         } catch (NullPointerException e) {
@@ -639,7 +652,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(bob);
         boolean result = erc721.setApprovalForAll(david,true);
-        assertEquals(result, true); //(result).isEqualTo(true);
+        assertEquals(result, true);
     }
 
     @Test
@@ -676,6 +689,7 @@ public class StandardTest {
             }
         }
 
+        String bob;
         try {
             bob = posCertificateMetaForBob.getOwnerKey();
         } catch (NullPointerException e) {
@@ -715,6 +729,7 @@ public class StandardTest {
             }
         }
 
+        String david;
         try {
             david = posCertificateMetaForDavid.getOwnerKey();
         } catch (NullPointerException e) {
@@ -761,6 +776,7 @@ public class StandardTest {
             }
         }
 
+        String carol;
         try {
             carol = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
@@ -808,6 +824,7 @@ public class StandardTest {
             }
         }
 
+        String carol;
         try {
             carol = posCertificateMeta.getOwnerKey();
         } catch (NullPointerException e) {
