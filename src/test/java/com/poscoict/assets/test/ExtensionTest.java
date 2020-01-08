@@ -129,13 +129,13 @@ public class ExtensionTest {
         List<String> signatures = new ArrayList<>(Arrays.asList("[String]", "[]"));
         xattr.put("signatures", signatures);
 
-        boolean checkForDoc = xType.registerTokenType(david, docType, xattr);
+        boolean checkForDoc = xType.enrollTokenType(david, docType, xattr);
         String sigType = "sig";
         Map<String, List<String>> xattr1 = new HashMap<>();
         List<String> hash1 = new ArrayList<>(Arrays.asList("String", ""));
         xattr1.put("hash", hash1);
 
-        boolean checkForSig = xType.registerTokenType(david, sigType, xattr1);
+        boolean checkForSig = xType.enrollTokenType(david, sigType, xattr1);
 
         boolean result = checkForDoc && checkForSig;
         assertEquals(result, true);
@@ -183,7 +183,7 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        Map<String, List<String>> xattr = xType.getTokenType(type);
+        Map<String, List<String>> xattr = xType.retrieveTokenType(type);
 
         assertEquals(xattr.containsKey("hash"), true);
         List<String> hash = xattr.get("hash");
@@ -488,83 +488,39 @@ public class ExtensionTest {
             Map<String, Object> map =
                     objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
 
-            String type = (String) map.get("type");
-            String owner = (String) map.get("owner");
-            String approvee = (String) map.get("approvee");
-            Map<String, Object> xattrMap = (HashMap<String, Object>) map.get("xattr");
+            Map<String, String> uri = (HashMap<String, String>) map.get("uri");
 
-            List<String> signers = (ArrayList<String>) xattrMap.get("signers");
-            String hash = (String) xattrMap.get("hash");
-            int pages = (int) xattrMap.get("pages");
-
-            Map<String, String> uriMap = (HashMap<String, String>) map.get("uri");
-            String path = uriMap.get("path");
-            String merkleroot = uriMap.get("hash");
-
-            assertEquals(david, owner);
-            if(david.equals(owner)) {
-                logger.info("query owner true");
-            }else {
-                logger.info("query owner fail");
-            }
-
-            assertEquals(this.type, type);
-            if(this.type.equals(type)) {
-                logger.info("query type true");
-            }else {
-                logger.info("query type fail");
-            }
-
-            assertEquals(this.signers.get(0), signers.get(0));
-            if(this.signers.get(0).equals(signers.get(0))) {
-                logger.info("query signers.get(0) true");
-            }else {
-                logger.info("query signers.get(0) fail");
-            }
-
-            assertEquals(this.signers.get(1), signers.get(1));
-            if(this.signers.get(1).equals(signers.get(1))) {
-                logger.info("query signers.get(1) true");
-            }else {
-                logger.info("query signers.get(1) fail");
-            }
-
-            assertEquals(this.signers.get(2), signers.get(2));
-            if(this.signers.get(2).equals(signers.get(2))) {
-                logger.info("query signers.get(2) true");
-            }else {
-                logger.info("query signers.get(2) fail");
-            }
-
-            assertEquals(this.hash, hash);
-            if(this.hash.equals(hash)) {
-                logger.info("query hash true");
-            }else {
-                logger.info("query hash fail");
-            }
-
-            assertEquals(this.pages, pages);
-            if(this.pages == pages) {
-                logger.info("query pages true");
-            }else {
-                logger.info("query pages fail");
-            }
-
+            String path = uri.get("path");
             assertEquals(this.path, path);
-            if(this.path.equals(path)) {
-                logger.info("query path true");
-            }else {
-                logger.info("query path fail");
-            }
 
+            String merkleroot = uri.get("hash");
             assertEquals(this.merkleroot, merkleroot);
-            if(this.merkleroot.equals(merkleroot)) {
-                logger.info("query merkleroot true");
-            }else {
-                logger.info("query merkleroot fail");
-            }
+
+            Map<String, Object> xattr = (HashMap<String, Object>) map.get("xattr");
+
+            List<String> signers = (ArrayList<String>) xattr.get("signers");
+            assertEquals(signers.size(), 3);
+            assertEquals(this.signers.get(0), signers.get(0));
+            assertEquals(this.signers.get(1), signers.get(1));
+            assertEquals(this.signers.get(2), signers.get(2));
+
+            String hash = (String) xattr.get("hash");
+            assertEquals(this.hash, hash);
+
+            int pages = (int) xattr.get("pages");
+            assertEquals(this.pages, pages);
+
+            boolean activated = (boolean) xattr.get("activated");
+            assertEquals(activated, false);
+
+            Integer parent = (Integer) xattr.get("parent");
+            assertEquals(parent, Integer.valueOf(-1));
+
+            List<Integer> children = (ArrayList<Integer>) xattr.get("children");
+            assertEquals(children.get(0), Integer.valueOf(161));
+            assertEquals(children.get(1), Integer.valueOf(162));
         } else {
-            logger.info("query fail");
+            logger.error("query fail");
         }
     }
 
@@ -616,84 +572,18 @@ public class ExtensionTest {
             Map<String, Object> map =
                     objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
 
-            String type = (String) map.get("type");
-            String owner = (String) map.get("owner");
-            String approvee = (String) map.get("approvee");
-            Map<String, Object> xattrMap = (HashMap<String, Object>) map.get("xattr");
+            Map<String, Object> xattr = (HashMap<String, Object>) map.get("xattr");
 
-            List<String> signers = (ArrayList<String>) xattrMap.get("signers");
-            String hash = (String) xattrMap.get("hash");
-            int pages = (int) xattrMap.get("pages");
+            int pages = (int) xattr.get("pages");
+            assertEquals(Integer.parseInt(this.values[0]), pages);
 
-            Map<String, String> uriMap = (HashMap<String, String>) map.get("uri");
-            String path = uriMap.get("path");
-            String merkleroot = uriMap.get("hash");
+            boolean activated = (boolean) xattr.get("activated");
+            assertEquals(activated, true);
 
-            assertEquals(david, owner);
-            if(david.equals(owner)) {
-                logger.info("query owner true");
-            }else {
-                logger.info("query owner fail");
-            }
-
-            assertEquals(this.type, type);
-            if(this.type.equals(type)) {
-                logger.info("query type true");
-            }else {
-                logger.info("query type fail");
-            }
-
-            assertEquals(this.signers.get(0), signers.get(0));
-            if(this.signers.get(0).equals(signers.get(0))) {
-                logger.info("query signers.get(0) true");
-            }else {
-                logger.info("query signers.get(0) fail");
-            }
-
-            assertEquals(this.signers.get(1), signers.get(1));
-            if(this.signers.get(1).equals(signers.get(1))) {
-                logger.info("query signers.get(1) true");
-            }else {
-                logger.info("query signers.get(1) fail");
-            }
-
-            assertEquals(this.signers.get(2), signers.get(2));
-            if(this.signers.get(2).equals(signers.get(2))) {
-                logger.info("query signers.get(2) true");
-            }else {
-                logger.info("query signers.get(2) fail");
-            }
-
-            assertEquals(this.hash, hash);
-            if(this.hash.equals(hash)) {
-                logger.info("query hash true");
-            }else {
-                logger.info("query hash fail");
-            }
-
-            int value = Integer.parseInt(this.values[0]);
-            assertEquals(value, pages);
-            if(value == pages) {
-                logger.info("query pages true");
-            }else {
-                logger.info("query pages fail");
-            }
-
-            assertEquals(this.path, path);
-            if(this.path.equals(path)) {
-                logger.info("query path true");
-            }else {
-                logger.info("query path fail");
-            }
-
-            assertEquals(this.merkleroot, merkleroot);
-            if(this.merkleroot.equals(merkleroot)) {
-                logger.info("query merkleroot true");
-            }else {
-                logger.info("query merkleroot fail");
-            }
+            Integer parent = (Integer) xattr.get("parent");
+            assertEquals(parent, Integer.valueOf(160));
         } else {
-            logger.info("query fail");
+            logger.error("query fail");
         }
     }
 
@@ -745,82 +635,16 @@ public class ExtensionTest {
             Map<String, Object> map =
                     objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
 
-            String type = (String) map.get("type");
-            String owner = (String) map.get("owner");
-            String approvee = (String) map.get("approvee");
-            Map<String, Object> xattrMap = (HashMap<String, Object>) map.get("xattr");
+            Map<String, Object> xattr = (HashMap<String, Object>) map.get("xattr");
 
-            List<String> signers = (ArrayList<String>) xattrMap.get("signers");
-            String hash = (String) xattrMap.get("hash");
-            int pages = (int) xattrMap.get("pages");
+            int pages = (int) xattr.get("pages");
+            assertEquals(Integer.parseInt(this.values[1]), pages);
 
-            Map<String, String> uriMap = (HashMap<String, String>) map.get("uri");
-            String path = uriMap.get("path");
-            String merkleroot = uriMap.get("hash");
+            boolean activated = (boolean) xattr.get("activated");
+            assertEquals(activated, true);
 
-            assertEquals(david, owner);
-            if(david.equals(owner)) {
-                logger.info("query owner true");
-            }else {
-                logger.info("query owner fail");
-            }
-
-            assertEquals(this.type, type);
-            if(this.type.equals(type)) {
-                logger.info("query type true");
-            }else {
-                logger.info("query type fail");
-            }
-
-            assertEquals(this.signers.get(0), signers.get(0));
-            if(this.signers.get(0).equals(signers.get(0))) {
-                logger.info("query signers.get(0) true");
-            }else {
-                logger.info("query signers.get(0) fail");
-            }
-
-            assertEquals(this.signers.get(1), signers.get(1));
-            if(this.signers.get(1).equals(signers.get(1))) {
-                logger.info("query signers.get(1) true");
-            }else {
-                logger.info("query signers.get(1) fail");
-            }
-
-            assertEquals(this.signers.get(2), signers.get(2));
-            if(this.signers.get(2).equals(signers.get(2))) {
-                logger.info("query signers.get(2) true");
-            }else {
-                logger.info("query signers.get(2) fail");
-            }
-
-            assertEquals(this.hash, hash);
-            if(this.hash.equals(hash)) {
-                logger.info("query hash true");
-            }else {
-                logger.info("query hash fail");
-            }
-
-            int value = Integer.parseInt(this.values[1]);
-            assertEquals(value, pages);
-            if(value == pages) {
-                logger.info("query pages true");
-            }else {
-                logger.info("query pages fail");
-            }
-
-            assertEquals(this.path, path);
-            if(this.path.equals(path)) {
-                logger.info("query path true");
-            }else {
-                logger.info("query path fail");
-            }
-
-            assertEquals(this.merkleroot, merkleroot);
-            if(this.merkleroot.equals(merkleroot)) {
-                logger.info("query merkleroot true");
-            }else {
-                logger.info("query merkleroot fail");
-            }
+            Integer parent = (Integer) xattr.get("parent");
+            assertEquals(parent, Integer.valueOf(160));
         } else {
             logger.info("query fail");
         }
@@ -867,12 +691,17 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String attr = david +" SigId";
-        String index = "sigIds";
+        BigInteger id = BigInteger.valueOf(161);
+
+        String index = "signatures";
+
+        List<String> signatures = new ArrayList<>();
+        signatures.add("david signature");
+        String attr = signatures.toString();
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(david);
-        boolean result = eerc721.update(tokenIdForEERC721, index, attr);
+        boolean result = eerc721.update(id, index, attr);
         assertEquals(result, true);
     }
 
@@ -919,7 +748,7 @@ public class ExtensionTest {
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(david);
-        boolean result =eerc721.deactivate(tokenIdForEERC721);
+        boolean result =eerc721.deactivate(newtokenIdForEERC721s[0]);
         assertEquals(result, true);
     }
 
@@ -965,90 +794,15 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        String result = eerc721.query(tokenIdForEERC721);
+        String signaturesStr = xnft.getXAttr(newtokenIdForEERC721s[0], "signatures");
+        List<String> signatures = Arrays.asList(signaturesStr.substring(1, signaturesStr.length() -1).split(", "));
+        assertEquals(signatures.get(0), "david signature");
 
-        if(result != null) {
-            Map<String, Object> map =
-                    objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
-
-            String type = (String) map.get("type");
-            String owner = (String) map.get("owner");
-            String approvee = (String) map.get("approvee");
-            Map<String, Object> xattrMap = (HashMap<String, Object>) map.get("xattr");
-
-            List<String> signers = (ArrayList<String>) xattrMap.get("signers");
-            String hash = (String) xattrMap.get("hash");
-            int pages = (int) xattrMap.get("pages");
-
-            Map<String, String> uriMap = (HashMap<String, String>) map.get("uri");
-            String path = uriMap.get("path");
-            String merkleroot = uriMap.get("hash");
-
-            assertEquals(david, owner);
-            if(david.equals(owner)) {
-                logger.info("query owner true");
-            }else {
-                logger.info("query owner fail");
-            }
-
-            assertEquals(this.type, type);
-            if(this.type.equals(type)) {
-                logger.info("query type true");
-            }else {
-                logger.info("query type fail");
-            }
-
-            assertEquals(this.signers.get(0), signers.get(0));
-            if(this.signers.get(0).equals(signers.get(0))) {
-                logger.info("query signers.get(0) true");
-            }else {
-                logger.info("query signers.get(0) fail");
-            }
-
-            assertEquals(this.signers.get(1), signers.get(1));
-            if(this.signers.get(1).equals(signers.get(1))) {
-                logger.info("query signers.get(1) true");
-            }else {
-                logger.info("query signers.get(1) fail");
-            }
-
-            assertEquals(this.signers.get(2), signers.get(2));
-            if(this.signers.get(2).equals(signers.get(2))) {
-                logger.info("query signers.get(2) true");
-            }else {
-                logger.info("query signers.get(2) fail");
-            }
-
-            assertEquals(this.hash, hash);
-            if(this.hash.equals(hash)) {
-                logger.info("query hash true");
-            }else {
-                logger.info("query hash fail");
-            }
-
-            assertEquals(this.pages, pages);
-            if(this.pages == pages) {
-                logger.info("query pages true");
-            }else {
-                logger.info("query pages fail");
-            }
-
-            assertEquals(this.path, path);
-            if(this.path.equals(path)) {
-                logger.info("query path true");
-            }else {
-                logger.info("query path fail");
-            }
-
-            assertEquals(this.merkleroot, merkleroot);
-            if(this.merkleroot.equals(merkleroot)) {
-                logger.info("query merkleroot true");
-            }else {
-                logger.info("query merkleroot fail");
-            }
-        } else {
-            logger.info("query fail");
-        }
+        String activated = xnft.getXAttr(newtokenIdForEERC721s[0], "parent");
+        logger.info(
+                activated
+        );
+        //assertEquals(activated, false);
     }
 
     @Test
