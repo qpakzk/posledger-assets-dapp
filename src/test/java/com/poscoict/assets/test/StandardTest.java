@@ -141,6 +141,7 @@ public class StandardTest {
 
         Manager.setChaincodeId(chaincodeId);
         String type = baseNFT.getType(id);
+        logger.info("BaseNFT.getType : {}", type);
         assertEquals(type, "base");
     }
 
@@ -188,57 +189,9 @@ public class StandardTest {
 
         Manager.setChaincodeId(chaincodeId);
         BigInteger balance = erc721.balanceOf(alice);
+        logger.info("ERC721.balanceOf : {}", balance);
         assertEquals(balance, BigInteger.ONE);
     }
-
-    @Test
-    public void ownerOfTest() throws Exception {
-        String fileName = "./certForAlice";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String alice;
-        BigInteger id = BigInteger.ZERO;
-        try {
-            alice = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-        String owner = erc721.ownerOf(id);
-        assertEquals(owner, alice);
-    }
-
 
     @Test
     public void transferFromTest() throws Exception {
@@ -332,55 +285,7 @@ public class StandardTest {
     }
 
     @Test
-    public void afterThatBalanceOfTest() throws Exception {
-        String fileName = "./certForAlice";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String alice;
-        try {
-            alice = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-        Manager.setCaller(alice);
-        BigInteger result = erc721.balanceOf(alice);
-        assertEquals(result, BigInteger.ZERO);
-    }
-
-    @Test
-    public void afterThatOwnerOfTest() throws Exception {
+    public void ownerOfTest() throws Exception {
         String fileName = "./certForBob";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
@@ -425,6 +330,7 @@ public class StandardTest {
 
         Manager.setChaincodeId(chaincodeId);
         String result = erc721.ownerOf(id);
+        logger.info("ERC721.ownerOf : {}", result);
         assertEquals(result, bob);
     }
 
@@ -564,6 +470,7 @@ public class StandardTest {
 
         Manager.setChaincodeId(chaincodeId);
         String result = erc721.getApproved(id);
+        logger.info("ERC721.getApproved : {}", result);
         assertEquals(result, carol);
     }
 
@@ -739,6 +646,7 @@ public class StandardTest {
 
         Manager.setChaincodeId(chaincodeId);
         boolean result = erc721.isApprovedForAll(bob, david);
+        logger.info("ERC721.isApprovedForAll : {}", result);
         assertEquals(result, true);
     }
 
