@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +60,7 @@ public class EERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse mint(@RequestParam String certiPassword,
                              @RequestParam MultipartFile certfile, HttpServletRequest request,
-                             @RequestParam BigInteger tokenId,
+                             @RequestParam String tokenId,
                              @RequestParam String type,
                              @RequestParam int pages) throws Exception {
 
@@ -165,8 +164,8 @@ public class EERC721Controller extends ExceptionHandleController {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger balance = eerc721.balanceOf(owner, type);
-        return new HttpResponse(HttpResponse.success, String.valueOf(balance));
+        long balance = eerc721.balanceOf(owner, type);
+        return new HttpResponse(HttpResponse.success, Long.toString(balance));
     }
 
     @RequestMapping(value = "/eerc721/tokenIdsOf", method = RequestMethod.POST)
@@ -205,7 +204,7 @@ public class EERC721Controller extends ExceptionHandleController {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        List<BigInteger> tokenIds = eerc721.tokenIdsOf(owner);
+        List<String> tokenIds = eerc721.tokenIdsOf(owner);
         return new HttpResponse(HttpResponse.success, tokenIds.toString());
     }
 
@@ -213,9 +212,9 @@ public class EERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse divide(@RequestParam String certiPassword,
                                @RequestParam MultipartFile certfile, HttpServletRequest request,
-                               @RequestParam BigInteger tokenId,
-                               @RequestParam BigInteger firstNewTokenId,
-                               @RequestParam BigInteger secondNewTokenId,
+                               @RequestParam String tokenId,
+                               @RequestParam String firstNewTokenId,
+                               @RequestParam String secondNewTokenId,
                                @RequestParam String firstValue,
                                @RequestParam String secondValue) throws Exception {
 
@@ -259,7 +258,7 @@ public class EERC721Controller extends ExceptionHandleController {
 
         Manager.setChaincodeId(chaincodeId);
         String index = "pages";
-        BigInteger[] newtokenIdForEERC721s = { firstNewTokenId, secondNewTokenId };
+        String[] newtokenIdForEERC721s = { firstNewTokenId, secondNewTokenId };
         String[] values = { firstValue, secondValue };
         Manager.setCaller(caller);
         boolean result = eerc721.divide(tokenId, newtokenIdForEERC721s, values, index);
@@ -271,7 +270,7 @@ public class EERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse query(@RequestParam String certiPassword,
                               @RequestParam MultipartFile certfile, HttpServletRequest request,
-                              @RequestParam BigInteger tokenId) throws Exception {
+                              @RequestParam String tokenId) throws Exception {
 
 
         PosCertificate posCertificate = null;
@@ -313,7 +312,7 @@ public class EERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse update(@RequestParam String certiPassword,
                                @RequestParam MultipartFile certfile, HttpServletRequest request,
-                               @RequestParam BigInteger tokenId,
+                               @RequestParam String tokenId,
                                @RequestParam String index,
                                @RequestParam String attr) throws Exception {
 
@@ -365,7 +364,7 @@ public class EERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse deactivate(@RequestParam String certiPassword,
                                    @RequestParam MultipartFile certfile, HttpServletRequest request,
-                                   @RequestParam BigInteger tokenId) throws Exception {
+                                   @RequestParam String tokenId) throws Exception {
 
         PosCertificate posCertificate = null;
         try {
@@ -415,7 +414,7 @@ public class EERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse queryHistory(@RequestParam String certiPassword,
                                      @RequestParam MultipartFile certfile, HttpServletRequest request,
-                                     @RequestParam BigInteger tokenId) throws Exception {
+                                     @RequestParam String tokenId) throws Exception {
 
         PosCertificate posCertificate = null;
         try {

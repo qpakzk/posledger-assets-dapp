@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigInteger;
-
 @Controller
 public class ERC721Controller extends ExceptionHandleController {
     private static final Logger logger = LogManager.getLogger(ERC721Controller.class);
@@ -57,7 +55,7 @@ public class ERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse mint(@RequestParam String certiPassword,
                              @RequestParam MultipartFile certfile, HttpServletRequest request,
-                             @RequestParam BigInteger tokenId) throws Exception {
+                             @RequestParam String tokenId) throws Exception {
 
 
         if (certfile.isEmpty()) {
@@ -145,7 +143,7 @@ public class ERC721Controller extends ExceptionHandleController {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger balance = erc721.balanceOf(owner);
+        long balance = erc721.balanceOf(owner);
         return new HttpResponse(HttpResponse.success, String.valueOf(balance));
     }
 
@@ -153,7 +151,7 @@ public class ERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse ownerOf(@RequestParam String certiPassword,
                                 @RequestParam MultipartFile certfile, HttpServletRequest request,
-                                @RequestParam BigInteger tokenId) throws Exception {
+                                @RequestParam String tokenId) throws Exception {
 
 
         PosCertificate posCertificate = null;
@@ -196,7 +194,7 @@ public class ERC721Controller extends ExceptionHandleController {
                                      @RequestParam MultipartFile certfile, HttpServletRequest request,
                                      @RequestParam String from,
                                      @RequestParam String to,
-                                     @RequestParam BigInteger tokenId) throws Exception {
+                                     @RequestParam String tokenId) throws Exception {
 
 
         if (certfile.isEmpty()) {
@@ -252,7 +250,7 @@ public class ERC721Controller extends ExceptionHandleController {
     public HttpResponse approve(@RequestParam String certiPassword,
                                 @RequestParam MultipartFile certfile, HttpServletRequest request,
                                 @RequestParam String approved,
-                                @RequestParam BigInteger tokenId) throws Exception {
+                                @RequestParam String tokenId) throws Exception {
 
 
         if (certfile.isEmpty()) {
@@ -363,7 +361,7 @@ public class ERC721Controller extends ExceptionHandleController {
     @ResponseBody
     public HttpResponse getApproved(@RequestParam String certiPassword,
                                     @RequestParam MultipartFile certfile, HttpServletRequest request,
-                                    @RequestParam BigInteger tokenId) throws Exception {
+                                    @RequestParam String tokenId) throws Exception {
 
         PosCertificate posCertificate = null;
         try {
