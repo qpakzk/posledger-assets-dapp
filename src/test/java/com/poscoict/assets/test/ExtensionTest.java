@@ -22,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
-import java.math.BigInteger;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -58,7 +57,7 @@ public class ExtensionTest {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
-        PosCertificate posCertificate = null;
+        PosCertificate posCertificate;
         try {
             posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
         } catch(Exception e) {
@@ -67,7 +66,7 @@ public class ExtensionTest {
         }
 
         // 인증서 비밀번호 검증
-        boolean isPassward = false;
+        boolean isPassward;
 
         try {
             isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
@@ -116,7 +115,7 @@ public class ExtensionTest {
         uri.put("path", path);
         uri.put("hash", merkleroot);
 
-        BigInteger id = BigInteger.valueOf(160);
+        String id = "160";
         String type = "doc";
         boolean result = xnft.mint(id, type, david, xattr, uri);
         assertEquals(result, true);
@@ -136,7 +135,7 @@ public class ExtensionTest {
         }
 
         // 인증서 비밀번호 검증
-        boolean isPassward = false;
+        boolean isPassward;
 
         try {
             isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
@@ -166,8 +165,9 @@ public class ExtensionTest {
 
         Manager.setChaincodeId(chaincodeId);
         String type = "doc";
-        BigInteger balance = eerc721.balanceOf(david, type);
-        assertEquals(balance, BigInteger.ONE);
+        long balance = eerc721.balanceOf(david, type);
+        logger.info("EERC721.balanceOf : {}", balance);
+        assertEquals(balance, 1);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class ExtensionTest {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
-        PosCertificate posCertificate = null;
+        PosCertificate posCertificate;
         try {
             posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
         } catch(Exception e) {
@@ -214,10 +214,10 @@ public class ExtensionTest {
 
         Manager.setChaincodeId(chaincodeId);
 
-        BigInteger id = BigInteger.valueOf(160);
+        String id = "160";
         String index = "pages";
         Manager.setCaller(david);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
+        String[] newIds = { "161", "162" };
         String[] values = {"40", "60"};
         boolean result = eerc721.divide(id, newIds, values, index);
         assertEquals(result, true);
@@ -266,11 +266,11 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        List<BigInteger> tokenIds = eerc721.tokenIdsOf(david);
-
-        assertEquals(tokenIds.get(0), BigInteger.valueOf(160));
-        assertEquals(tokenIds.get(1), BigInteger.valueOf(161));
-        assertEquals(tokenIds.get(2), BigInteger.valueOf(162));
+        List<String> tokenIds = eerc721.tokenIdsOf(david);
+        logger.info("EERC721.tokenIdsOf : {}", tokenIds);
+        assertEquals(tokenIds.get(0), "160");
+        assertEquals(tokenIds.get(1), "161");
+        assertEquals(tokenIds.get(2), "162");
     }
 
     @Test
@@ -316,7 +316,7 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger id = BigInteger.valueOf(160);
+        String id = "160";
         String result = eerc721.query(id);
 
         if(result != null) {
@@ -412,7 +412,7 @@ public class ExtensionTest {
 
         Manager.setChaincodeId(chaincodeId);
 
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
+        String[] newIds = { "161", "162" };
         String result = eerc721.query(newIds[0]);
 
         if(result != null) {
@@ -478,7 +478,7 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
+        String[] newIds = { "161", "162" };
         String result = eerc721.query(newIds[1]);
 
         if(result != null) {
@@ -543,7 +543,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger id = BigInteger.valueOf(161);
+        String id = "161";
 
         String index = "signatures";
 
@@ -601,7 +601,7 @@ public class ExtensionTest {
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(david);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
+        String[] newIds = { "161", "162" };
         boolean result =eerc721.deactivate(newIds[0]);
         assertEquals(result, true);
     }
@@ -649,9 +649,10 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
+        String[] newIds = { "161", "162" };
         String signaturesStr = xnft.getXAttr(newIds[0], "signatures");
         List<String> signatures = Arrays.asList(signaturesStr.substring(1, signaturesStr.length() -1).split(", "));
+        logger.info("XNFT.getXAttr {}", signatures);
         assertEquals(signatures.get(0), "david signature");
 
         String activated = xnft.getXAttr(newIds[0], "parent");
@@ -705,7 +706,7 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger id = BigInteger.valueOf(160);
+        String id = "160";
         List<String> histories = eerc721.queryHistory(id);
 
         if (histories != null) {
