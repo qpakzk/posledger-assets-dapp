@@ -22,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
-import java.math.BigInteger;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -318,10 +317,11 @@ public class TokenTypeTest {
         List<String> attr2 = new ArrayList<>(Arrays.asList("String", ""));
         attributes.put("attr2", attr2);
 
-        List<String> parent = new ArrayList<>(Arrays.asList("BigInteger", BigInteger.valueOf(-1).toString()));
+        List<String> parent = new ArrayList<>(Arrays.asList("String", ""));
         attributes.put("parent", parent);
 
-        List<String> children = new ArrayList<>(Arrays.asList("[BigInteger]", new ArrayList<BigInteger>().toString()));
+        List<String> children
+                = new ArrayList<>(Arrays.asList("[String]", new ArrayList<String>().toString()));
         attributes.put("children", children);
 
         List<String> activated = new ArrayList<>(Arrays.asList("Boolean", Boolean.toString(true)));
