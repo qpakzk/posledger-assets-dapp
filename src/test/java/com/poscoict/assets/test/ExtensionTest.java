@@ -357,12 +357,12 @@ public class ExtensionTest {
             boolean activated = (boolean) xattr.get("activated");
             assertEquals(activated, false);
 
-            Integer parent = (Integer) xattr.get("parent");
-            assertEquals(parent, Integer.valueOf(-1));
+            String parent = (String) xattr.get("parent");
+            assertEquals(parent, "");
 
-            List<Integer> children = (ArrayList<Integer>) xattr.get("children");
-            assertEquals(children.get(0), Integer.valueOf(161));
-            assertEquals(children.get(1), Integer.valueOf(162));
+            List<String> children = (ArrayList<String>) xattr.get("children");
+            assertEquals(children.get(0), "161");
+            assertEquals(children.get(1), "162");
         } else {
             logger.error("query fail");
         }
@@ -428,8 +428,8 @@ public class ExtensionTest {
             boolean activated = (boolean) xattr.get("activated");
             assertEquals(activated, true);
 
-            Integer parent = (Integer) xattr.get("parent");
-            assertEquals(parent, Integer.valueOf(160));
+            String parent = (String) xattr.get("parent");
+            assertEquals(parent, "160");
         } else {
             logger.error("query fail");
         }
@@ -494,8 +494,8 @@ public class ExtensionTest {
             boolean activated = (boolean) xattr.get("activated");
             assertEquals(activated, true);
 
-            Integer parent = (Integer) xattr.get("parent");
-            assertEquals(parent, Integer.valueOf(160));
+            String parent = (String) xattr.get("parent");
+            assertEquals(parent, "160");
         } else {
             logger.info("query fail");
         }
