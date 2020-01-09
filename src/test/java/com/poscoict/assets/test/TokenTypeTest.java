@@ -31,14 +31,12 @@ import static org.junit.Assert.assertEquals;
 @Configuration
 @ComponentScan
 @ContextConfiguration(classes = SpringConfig.class)
-public class ExtensionTest {
-    private static final Logger logger = LogManager.getLogger(ExtensionTest.class);
+
+public class TokenTypeTest {
+    private static final Logger logger = LogManager.getLogger(TokenTypeTest.class);
 
     @Autowired
-    private EERC721 eerc721;
-
-    @Autowired
-    private XNFT xnft;
+    private XType xType;
 
     @Autowired
     private PosCertificateService posCertificateService;
@@ -54,7 +52,7 @@ public class ExtensionTest {
     private final static String CERT_PASSWARD = "1234";
 
     @Test
-    public void mintTest() throws Exception {
+    public void enrollDocTokenTypeTest() throws Exception {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
@@ -98,467 +96,26 @@ public class ExtensionTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(david);
 
-        Map<String, Object> xattr = new HashMap<>();
-        int pages = 100;
-        String hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
-        List<String> signers =
-                new ArrayList<>(Arrays.asList("1FbLcUY39EmYSjtxjpHSVKEeUZQNKAvooa",
-                        "1K1kziRrgtLc8nspFSsnmWMS6A8rVC9AbC",
-                        "1Nhemxp7rPGAKqSsXG7xt728cEgEGtMuFZ"));
-        String path = "https://www.off-chain-storage.com";
-        String merkleroot = "558ad18828f6da6d471cdb1a3443f039a770e03617f163896980d914d643e4bc";
-
-        xattr.put("pages", pages);
+        String docType = "doc";
+        Map<String, List<String>> xattr = new HashMap<>();
+        List<String> hash = new ArrayList<>(Arrays.asList("String", ""));
         xattr.put("hash", hash);
+
+        List<String> pages = new ArrayList<>(Arrays.asList("Integer", "0"));
+        xattr.put("pages", pages);
+
+        List<String> signers = new ArrayList<>(Arrays.asList("[String]", "[]"));
         xattr.put("signers", signers);
 
-        Map<String, String> uri = new HashMap<>();
-        uri.put("path", path);
-        uri.put("hash", merkleroot);
+        List<String> signatures = new ArrayList<>(Arrays.asList("[String]", "[]"));
+        xattr.put("signatures", signatures);
 
-        BigInteger id = BigInteger.valueOf(160);
-        String type = "doc";
-        boolean result = xnft.mint(id, type, david, xattr, uri);
+        boolean result = xType.enrollTokenType(david, docType, xattr);
         assertEquals(result, true);
     }
 
     @Test
-    public void balanceOfTest() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-        String type = "doc";
-        BigInteger balance = eerc721.balanceOf(david, type);
-        assertEquals(balance, BigInteger.ONE);
-    }
-
-    @Test
-    public void divideTest() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-
-        BigInteger id = BigInteger.valueOf(160);
-        String index = "pages";
-        Manager.setCaller(david);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
-        String[] values = {"40", "60"};
-        boolean result = eerc721.divide(id, newIds, values, index);
-        assertEquals(result, true);
-    }
-
-    @Test
-    public void tokenIdsOfTest() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-        List<BigInteger> tokenIds = eerc721.tokenIdsOf(david);
-
-        assertEquals(tokenIds.get(0), BigInteger.valueOf(160));
-        assertEquals(tokenIds.get(1), BigInteger.valueOf(161));
-        assertEquals(tokenIds.get(2), BigInteger.valueOf(162));
-    }
-
-    @Test
-    public void queryTest() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-        BigInteger id = BigInteger.valueOf(160);
-        String result = eerc721.query(id);
-
-        if(result != null) {
-            Map<String, Object> map =
-                    objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
-
-            Map<String, String> uri = (HashMap<String, String>) map.get("uri");
-
-            String path = uri.get("path");
-            String origianl_path = "https://www.off-chain-storage.com";
-            assertEquals(origianl_path, path);
-
-            String merkleroot = uri.get("hash");
-            String original_merkleroot = "558ad18828f6da6d471cdb1a3443f039a770e03617f163896980d914d643e4bc";
-            assertEquals(original_merkleroot, merkleroot);
-
-            Map<String, Object> xattr = (HashMap<String, Object>) map.get("xattr");
-
-            List<String> signers = (ArrayList<String>) xattr.get("signers");
-            List<String> original_signers =
-                    new ArrayList<>(Arrays.asList("1FbLcUY39EmYSjtxjpHSVKEeUZQNKAvooa",
-                            "1K1kziRrgtLc8nspFSsnmWMS6A8rVC9AbC",
-                            "1Nhemxp7rPGAKqSsXG7xt728cEgEGtMuFZ"));
-
-            assertEquals(signers.size(), 3);
-            assertEquals(original_signers.get(0), signers.get(0));
-            assertEquals(original_signers.get(1), signers.get(1));
-            assertEquals(original_signers.get(2), signers.get(2));
-
-            String hash = (String) xattr.get("hash");
-            String original_hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
-            assertEquals(original_hash, hash);
-
-            int pages = (int) xattr.get("pages");
-            int original_pages = 100;
-            assertEquals(original_pages, pages);
-
-            boolean activated = (boolean) xattr.get("activated");
-            assertEquals(activated, false);
-
-            Integer parent = (Integer) xattr.get("parent");
-            assertEquals(parent, Integer.valueOf(-1));
-
-            List<Integer> children = (ArrayList<Integer>) xattr.get("children");
-            assertEquals(children.get(0), Integer.valueOf(161));
-            assertEquals(children.get(1), Integer.valueOf(162));
-        } else {
-            logger.error("query fail");
-        }
-    }
-
-    @Test
-    public void queryNewToken0Test() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
-        String result = eerc721.query(newIds[0]);
-
-        if(result != null) {
-            Map<String, Object> map =
-                    objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
-
-            Map<String, Object> xattr = (HashMap<String, Object>) map.get("xattr");
-
-            int pages = (int) xattr.get("pages");
-            String[] values = {"40", "60"};
-            assertEquals(Integer.parseInt(values[0]), pages);
-
-            boolean activated = (boolean) xattr.get("activated");
-            assertEquals(activated, true);
-
-            Integer parent = (Integer) xattr.get("parent");
-            assertEquals(parent, Integer.valueOf(160));
-        } else {
-            logger.error("query fail");
-        }
-    }
-
-    @Test
-    public void queryNewToken1Test() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        Manager.setChaincodeId(chaincodeId);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
-        String result = eerc721.query(newIds[1]);
-
-        if(result != null) {
-            Map<String, Object> map =
-                    objectMapper.readValue(result, new TypeReference<HashMap<String, Object>>(){});
-
-            Map<String, Object> xattr = (HashMap<String, Object>) map.get("xattr");
-
-            int pages = (int) xattr.get("pages");
-            String[] values = {"40", "60"};
-            assertEquals(Integer.parseInt(values[1]), pages);
-
-            boolean activated = (boolean) xattr.get("activated");
-            assertEquals(activated, true);
-
-            Integer parent = (Integer) xattr.get("parent");
-            assertEquals(parent, Integer.valueOf(160));
-        } else {
-            logger.info("query fail");
-        }
-    }
-
-    @Test
-    public void updateTest() throws Exception {
-        String fileName = "./certForDavid";
-        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
-
-        PosCertificate posCertificate = null;
-        try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-        }
-
-        // 인증서 비밀번호 검증
-        boolean isPassward = false;
-
-        try {
-            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch(Exception e) {
-            logger.error(e);
-            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-        }
-
-        PosCertificateMeta posCertificateMeta = null;
-
-        if (isPassward) {
-            try {
-                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
-            } catch (Exception e) {
-                logger.error(e);
-                throw new RestResourceException(e.getLocalizedMessage());
-            }
-        }
-
-        String david;
-        try {
-            david = posCertificateMeta.getOwnerKey();
-        } catch (NullPointerException e) {
-            logger.error(e);
-            throw new NullPointerException(e.getLocalizedMessage());
-        }
-
-        BigInteger id = BigInteger.valueOf(161);
-
-        String index = "signatures";
-
-        List<String> signatures = new ArrayList<>();
-        signatures.add("david signature");
-        String attr = signatures.toString();
-
-        Manager.setChaincodeId(chaincodeId);
-        Manager.setCaller(david);
-        boolean result = eerc721.update(id, index, attr);
-        assertEquals(result, true);
-    }
-
-    @Test
-    public void deactivateTest() throws Exception {
+    public void enrollSigTokenTypeTest() throws Exception {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
@@ -601,13 +158,18 @@ public class ExtensionTest {
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(david);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
-        boolean result =eerc721.deactivate(newIds[0]);
+
+        String sigType = "sig";
+        Map<String, List<String>> xattr = new HashMap<>();
+        List<String> hash = new ArrayList<>(Arrays.asList("String", ""));
+        xattr.put("hash", hash);
+
+        boolean result = xType.enrollTokenType(david, sigType, xattr);
         assertEquals(result, true);
     }
 
     @Test
-    public void afterUpdateAndDeactivateQueryTest() throws Exception {
+    public void enrollDummyTokenTypeTest() throws Exception {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
@@ -649,28 +211,26 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger[] newIds = { BigInteger.valueOf(161), BigInteger.valueOf(162) };
-        String signaturesStr = xnft.getXAttr(newIds[0], "signatures");
-        List<String> signatures = Arrays.asList(signaturesStr.substring(1, signaturesStr.length() -1).split(", "));
-        assertEquals(signatures.get(0), "david signature");
+        Manager.setCaller(david);
 
-        String activated = xnft.getXAttr(newIds[0], "parent");
-        logger.info(
-                activated
-        );
-        //assertEquals(activated, false);
+        String dummyType = "dummy";
+        Map<String, List<String>> xattr = new HashMap<>();
+        List<String> hash = new ArrayList<>(Arrays.asList("Integer", ""));
+        xattr.put("hash", hash);
+
+        boolean result = xType.enrollTokenType(david, dummyType, xattr);
+        assertEquals(result, true);
     }
 
     @Test
-    public void queryHistoryTest() throws Exception {
+    public void tokenTypesOfTest() throws Exception {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
         PosCertificate posCertificate = null;
         try {
-            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>() {
-            });
-        } catch (Exception e) {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
             logger.error(e);
             throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
         }
@@ -680,7 +240,50 @@ public class ExtensionTest {
 
         try {
             isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
-        } catch (Exception e) {
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        List<String> types = xType.tokenTypesOf();
+        logger.info(types.toString());
+        assertEquals(types.size(), 3);
+        assertEquals(types.get(0), "dummy");
+        assertEquals(types.get(1), "sig");
+        assertEquals(types.get(2), "doc");
+    }
+
+    @Test
+    public void updateDummyTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
             logger.error(e);
             throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
         }
@@ -705,15 +308,335 @@ public class ExtensionTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger id = BigInteger.valueOf(160);
-        List<String> histories = eerc721.queryHistory(id);
+        Manager.setCaller(david);
 
-        if (histories != null) {
-            for (String history : histories) {
-                if (history != null) {
-                    logger.info(history);
-                }
+        String dummyType = "dummy";
+        Map<String, List<String>> attributes = new HashMap<>();
+        List<String> attr1 = new ArrayList<>(Arrays.asList("Integer", Integer.toString(0)));
+        attributes.put("attr1", attr1);
+
+        List<String> attr2 = new ArrayList<>(Arrays.asList("String", ""));
+        attributes.put("attr2", attr2);
+
+        List<String> parent = new ArrayList<>(Arrays.asList("BigInteger", BigInteger.valueOf(-1).toString()));
+        attributes.put("parent", parent);
+
+        List<String> children = new ArrayList<>(Arrays.asList("[BigInteger]", new ArrayList<BigInteger>().toString()));
+        attributes.put("children", children);
+
+        List<String> activated = new ArrayList<>(Arrays.asList("Boolean", Boolean.toString(true)));
+        attributes.put("activated", activated);
+
+        boolean result = xType.updateTokenType(david, dummyType, attributes);
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void retrieveDummyTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
             }
         }
+
+        Manager.setChaincodeId(chaincodeId);
+        String dummyType = "dummy";
+        Map<String, List<String>> attributes = xType.retrieveTokenType(dummyType);
+
+        logger.info(attributes.toString());
+        assertEquals(attributes.containsKey("attr1"), true);
+        List<String> attr1 = attributes.get("attr1");
+        assertEquals(attr1.get(0), "Integer");
+        assertEquals(attr1.get(1), Integer.toString(0));
+    }
+
+    @Test
+    public void dropDummyTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
+
+        String dummyType = "dummy";
+        boolean result = xType.dropTokenType(david, dummyType);
+
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void enrollDateAttributeOfDocTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
+
+        String docType = "doc";
+        String attribute = "date";
+        String dataType = "Integer";
+        String initialValue = Integer.toString(20200110);
+        boolean result = xType.enrollAttributeOfTokenType(david, docType,attribute, dataType, initialValue);
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void updateDateAttributeOfDocTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
+
+        String docType = "doc";
+        String attribute = "date";
+        String dataType = "String";
+        String initialValue = "2020-01-10";
+        List<String> pair = new ArrayList<>(Arrays.asList(dataType, initialValue));
+        boolean result = xType.updateAttributeOfTokenType(david, docType,attribute, pair);
+        assertEquals(result, true);
+    }
+
+    @Test
+    public void retrieveDateAttributeOfDocTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
+
+        String docType = "doc";
+        String attribute = "date";
+        String dataType = "String";
+        String initialValue = "2020-01-10";
+        List<String> pair = xType.retrieveAttributeOfTokenType(docType, attribute);
+        logger.info(pair.toString());
+        assertEquals(dataType, pair.get(0));
+        assertEquals(initialValue, pair.get(1));
+    }
+
+    @Test
+    public void dropDateAttributeOfDocTokenTypeTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
+
+        String docType = "doc";
+        String attribute = "date";
+        boolean result = xType.dropAttributeOfTokenType(david, docType,attribute);
+        assertEquals(result, true);
     }
 }
