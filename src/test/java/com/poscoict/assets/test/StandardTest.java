@@ -23,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
-import java.math.BigInteger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -95,7 +94,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger id = BigInteger.ZERO;
+        String id = "0";
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(alice);
@@ -137,7 +136,7 @@ public class StandardTest {
             }
         }
 
-        BigInteger id = BigInteger.ZERO;
+        String id = "0";
 
         Manager.setChaincodeId(chaincodeId);
         String type = baseNFT.getType(id);
@@ -188,9 +187,9 @@ public class StandardTest {
         }
 
         Manager.setChaincodeId(chaincodeId);
-        BigInteger balance = erc721.balanceOf(alice);
+        long balance = erc721.balanceOf(alice);
         logger.info("ERC721.balanceOf : {}", balance);
-        assertEquals(balance, BigInteger.ONE);
+        assertEquals(balance, 1);
     }
 
     @Test
@@ -276,7 +275,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger id = BigInteger.ZERO;
+        String id = "0";
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(alice);
@@ -326,7 +325,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger id = BigInteger.ZERO;
+        String id = "0";
 
         Manager.setChaincodeId(chaincodeId);
         String result = erc721.ownerOf(id);
@@ -416,7 +415,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger id = BigInteger.ZERO;
+        String id = "0";
 
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(bob);
@@ -466,7 +465,7 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        BigInteger id = BigInteger.ZERO;
+        String id = "0";
 
         Manager.setChaincodeId(chaincodeId);
         String result = erc721.getApproved(id);
@@ -692,9 +691,10 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        String id = "1";
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(carol);
-        boolean result = baseNFT.mint(BigInteger.ONE, carol);
+        boolean result = baseNFT.mint(id, carol);
         assertEquals(result, true);
     }
 
@@ -740,9 +740,11 @@ public class StandardTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
+        String id = "1";
+
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(carol);
-        boolean result = baseNFT.burn(BigInteger.ONE);
+        boolean result = baseNFT.burn(id);
         assertEquals(result, true);
     }
 }
