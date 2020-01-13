@@ -109,7 +109,7 @@ public class TokenTypeTest {
         List<String> signatures = new ArrayList<>(Arrays.asList("[String]", "[]"));
         xattr.put("signatures", signatures);
 
-        boolean result = xType.enrollTokenType(david, docType, xattr);
+        boolean result = xType.enrollTokenType(docType, xattr);
         assertEquals(result, true);
     }
 
@@ -163,7 +163,7 @@ public class TokenTypeTest {
         List<String> hash = new ArrayList<>(Arrays.asList("String", ""));
         xattr.put("hash", hash);
 
-        boolean result = xType.enrollTokenType(david, sigType, xattr);
+        boolean result = xType.enrollTokenType(sigType, xattr);
         assertEquals(result, true);
     }
 
@@ -217,7 +217,7 @@ public class TokenTypeTest {
         List<String> hash = new ArrayList<>(Arrays.asList("Integer", ""));
         xattr.put("hash", hash);
 
-        boolean result = xType.enrollTokenType(david, dummyType, xattr);
+        boolean result = xType.enrollTokenType(dummyType, xattr);
         assertEquals(result, true);
     }
 
@@ -317,17 +317,7 @@ public class TokenTypeTest {
         List<String> attr2 = new ArrayList<>(Arrays.asList("String", ""));
         attributes.put("attr2", attr2);
 
-        List<String> parent = new ArrayList<>(Arrays.asList("String", ""));
-        attributes.put("parent", parent);
-
-        List<String> children
-                = new ArrayList<>(Arrays.asList("[String]", new ArrayList<String>().toString()));
-        attributes.put("children", children);
-
-        List<String> activated = new ArrayList<>(Arrays.asList("Boolean", Boolean.toString(true)));
-        attributes.put("activated", activated);
-
-        boolean result = xType.updateTokenType(david, dummyType, attributes);
+        boolean result = xType.updateTokenType(dummyType, attributes);
         assertEquals(result, true);
     }
 
@@ -422,7 +412,7 @@ public class TokenTypeTest {
         Manager.setCaller(david);
 
         String dummyType = "dummy";
-        boolean result = xType.dropTokenType(david, dummyType);
+        boolean result = xType.dropTokenType(dummyType);
 
         assertEquals(result, true);
     }
@@ -476,7 +466,7 @@ public class TokenTypeTest {
         String attribute = "date";
         String dataType = "Integer";
         String initialValue = Integer.toString(20200110);
-        boolean result = xType.enrollAttributeOfTokenType(david, docType,attribute, dataType, initialValue);
+        boolean result = xType.enrollAttributeOfTokenType(docType,attribute, dataType, initialValue);
         assertEquals(result, true);
     }
 
@@ -530,7 +520,7 @@ public class TokenTypeTest {
         String dataType = "String";
         String initialValue = "2020-01-10";
         List<String> pair = new ArrayList<>(Arrays.asList(dataType, initialValue));
-        boolean result = xType.updateAttributeOfTokenType(david, docType,attribute, pair);
+        boolean result = xType.updateAttributeOfTokenType(docType,attribute, pair);
         assertEquals(result, true);
     }
 
@@ -636,7 +626,7 @@ public class TokenTypeTest {
 
         String docType = "doc";
         String attribute = "date";
-        boolean result = xType.dropAttributeOfTokenType(david, docType,attribute);
+        boolean result = xType.dropAttributeOfTokenType(docType,attribute);
         assertEquals(result, true);
     }
 }
