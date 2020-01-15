@@ -224,7 +224,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void tokenIdsOfTest() throws Exception {
+    public void tokenIdsOfAllTest() throws Exception {
         String fileName = "./certForDavid";
         MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
 
@@ -271,6 +271,55 @@ public class ExtensionTest {
         assertEquals(tokenIds.get(0), "160");
         assertEquals(tokenIds.get(1), "161");
         assertEquals(tokenIds.get(2), "162");
+    }
+
+    @Test
+    public void tokenIdsOfAllActivatedTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate = null;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward = false;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        List<String> tokenIds = eerc721.tokenIdsOf(david, "_");
+        logger.info("EERC721.tokenIdsOf : {}", tokenIds);
+        assertEquals(tokenIds.get(0), "161");
+        assertEquals(tokenIds.get(1), "162");
     }
 
     @Test
