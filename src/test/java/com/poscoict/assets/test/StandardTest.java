@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @Configuration
@@ -99,7 +100,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(alice);
         boolean result = baseNFT.mint(id, alice);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -141,7 +142,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         String type = baseNFT.getType(id);
         logger.info("BaseNFT.getType : {}", type);
-        assertEquals(type, "base");
+        assertEquals("base", type);
     }
 
     @Test
@@ -189,7 +190,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         long balance = erc721.balanceOf(alice);
         logger.info("ERC721.balanceOf : {}", balance);
-        assertEquals(balance, 1);
+        assertEquals(1, balance);
     }
 
     @Test
@@ -280,7 +281,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(alice);
         boolean result = erc721.transferFrom(alice, bob, id);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -330,7 +331,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         String result = erc721.ownerOf(id);
         logger.info("ERC721.ownerOf : {}", result);
-        assertEquals(result, bob);
+        assertEquals(bob, result);
     }
 
     @Test
@@ -420,7 +421,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(bob);
         boolean result = erc721.approve(carol, id);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -470,7 +471,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         String result = erc721.getApproved(id);
         logger.info("ERC721.getApproved : {}", result);
-        assertEquals(result, carol);
+        assertEquals(carol, result);
     }
 
     @Test
@@ -558,7 +559,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(bob);
         boolean result = erc721.setApprovalForAll(david,true);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -646,7 +647,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         boolean result = erc721.isApprovedForAll(bob, david);
         logger.info("ERC721.isApprovedForAll : {}", result);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -695,7 +696,7 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(carol);
         boolean result = baseNFT.mint(id, carol);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -745,6 +746,6 @@ public class StandardTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(carol);
         boolean result = baseNFT.burn(id);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 }

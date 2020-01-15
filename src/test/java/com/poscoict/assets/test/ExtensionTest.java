@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileInputStream;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @Configuration
@@ -118,7 +118,7 @@ public class ExtensionTest {
         String id = "160";
         String type = "doc";
         boolean result = xnft.mint(id, type, david, xattr, uri);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class ExtensionTest {
         String type = "doc";
         long balance = eerc721.balanceOf(david, type);
         logger.info("EERC721.balanceOf : {}", balance);
-        assertEquals(balance, 1);
+        assertEquals(1, balance);
     }
 
     @Test
@@ -220,7 +220,7 @@ public class ExtensionTest {
         String[] newIds = { "161", "162" };
         String[] values = {"40", "60"};
         boolean result = eerc721.divide(id, newIds, values, index);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -268,9 +268,9 @@ public class ExtensionTest {
         Manager.setChaincodeId(chaincodeId);
         List<String> tokenIds = eerc721.tokenIdsOf(david);
         logger.info("EERC721.tokenIdsOf : {}", tokenIds);
-        assertEquals(tokenIds.get(0), "160");
-        assertEquals(tokenIds.get(1), "161");
-        assertEquals(tokenIds.get(2), "162");
+        assertEquals("160", tokenIds.get(0));
+        assertEquals("161", tokenIds.get(1));
+        assertEquals("162", tokenIds.get(2));
     }
 
     @Test
@@ -318,8 +318,8 @@ public class ExtensionTest {
         Manager.setChaincodeId(chaincodeId);
         List<String> tokenIds = eerc721.tokenIdsOf(david, "_");
         logger.info("EERC721.tokenIdsOf : {}", tokenIds);
-        assertEquals(tokenIds.get(0), "161");
-        assertEquals(tokenIds.get(1), "162");
+        assertEquals("161", tokenIds.get(0));
+        assertEquals("162", tokenIds.get(1));
     }
 
     @Test
@@ -390,7 +390,7 @@ public class ExtensionTest {
                             "1K1kziRrgtLc8nspFSsnmWMS6A8rVC9AbC",
                             "1Nhemxp7rPGAKqSsXG7xt728cEgEGtMuFZ"));
 
-            assertEquals(signers.size(), 3);
+            assertEquals(3, signers.size());
             assertEquals(original_signers.get(0), signers.get(0));
             assertEquals(original_signers.get(1), signers.get(1));
             assertEquals(original_signers.get(2), signers.get(2));
@@ -404,14 +404,14 @@ public class ExtensionTest {
             assertEquals(original_pages, pages);
 
             boolean activated = (boolean) xattr.get("activated");
-            assertEquals(activated, false);
+            assertFalse(activated);
 
             String parent = (String) xattr.get("parent");
-            assertEquals(parent, "");
+            assertEquals("", parent);
 
             List<String> children = (ArrayList<String>) xattr.get("children");
-            assertEquals(children.get(0), "161");
-            assertEquals(children.get(1), "162");
+            assertEquals("161", children.get(0));
+            assertEquals("162", children.get(1));
         } else {
             logger.error("query fail");
         }
@@ -475,10 +475,10 @@ public class ExtensionTest {
             assertEquals(Integer.parseInt(values[0]), pages);
 
             boolean activated = (boolean) xattr.get("activated");
-            assertEquals(activated, true);
+            assertTrue(activated);
 
             String parent = (String) xattr.get("parent");
-            assertEquals(parent, "160");
+            assertEquals("160", parent);
         } else {
             logger.error("query fail");
         }
@@ -541,10 +541,10 @@ public class ExtensionTest {
             assertEquals(Integer.parseInt(values[1]), pages);
 
             boolean activated = (boolean) xattr.get("activated");
-            assertEquals(activated, true);
+            assertTrue(activated);
 
             String parent = (String) xattr.get("parent");
-            assertEquals(parent, "160");
+            assertEquals("160", parent);
         } else {
             logger.info("query fail");
         }
@@ -603,7 +603,7 @@ public class ExtensionTest {
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(david);
         boolean result = eerc721.update(id, index, attr);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -652,7 +652,7 @@ public class ExtensionTest {
         Manager.setCaller(david);
         String[] newIds = { "161", "162" };
         boolean result =eerc721.deactivate(newIds[0]);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -702,13 +702,10 @@ public class ExtensionTest {
         String signaturesStr = xnft.getXAttr(newIds[0], "signatures");
         List<String> signatures = Arrays.asList(signaturesStr.substring(1, signaturesStr.length() -1).split(", "));
         logger.info("XNFT.getXAttr {}", signatures);
-        assertEquals(signatures.get(0), "david signature");
+        assertEquals("david signature", signatures.get(0));
 
-        String activated = xnft.getXAttr(newIds[0], "parent");
-        logger.info(
-                activated
-        );
-        //assertEquals(activated, false);
+        boolean activated = Boolean.parseBoolean(xnft.getXAttr(newIds[0], "parent"));
+        assertFalse(activated);
     }
 
     @Test

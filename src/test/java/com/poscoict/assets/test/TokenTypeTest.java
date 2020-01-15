@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @Configuration
@@ -110,7 +111,7 @@ public class TokenTypeTest {
         xattr.put("signatures", signatures);
 
         boolean result = xType.enrollTokenType(docType, xattr);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -164,7 +165,7 @@ public class TokenTypeTest {
         xattr.put("hash", hash);
 
         boolean result = xType.enrollTokenType(sigType, xattr);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -218,7 +219,7 @@ public class TokenTypeTest {
         xattr.put("hash", hash);
 
         boolean result = xType.enrollTokenType(dummyType, xattr);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -258,10 +259,10 @@ public class TokenTypeTest {
         Manager.setChaincodeId(chaincodeId);
         List<String> types = xType.tokenTypesOf();
         logger.info(types.toString());
-        assertEquals(types.size(), 3);
-        assertEquals(types.get(0), "dummy");
-        assertEquals(types.get(1), "sig");
-        assertEquals(types.get(2), "doc");
+        assertEquals(3, types.size());
+        assertEquals("dummy", types.get(0));
+        assertEquals("sig", types.get(1));
+        assertEquals("doc", types.get(2));
     }
 
     @Test
@@ -318,7 +319,7 @@ public class TokenTypeTest {
         attributes.put("attr2", attr2);
 
         boolean result = xType.updateTokenType(dummyType, attributes);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -360,10 +361,10 @@ public class TokenTypeTest {
         Map<String, List<String>> attributes = xType.retrieveTokenType(dummyType);
 
         logger.info(attributes.toString());
-        assertEquals(attributes.containsKey("attr1"), true);
+        assertTrue(attributes.containsKey("attr1"));
         List<String> attr1 = attributes.get("attr1");
-        assertEquals(attr1.get(0), "Integer");
-        assertEquals(attr1.get(1), Integer.toString(0));
+        assertEquals("Integer", attr1.get(0));
+        assertEquals(Integer.toString(0), attr1.get(1));
     }
 
     @Test
@@ -413,8 +414,7 @@ public class TokenTypeTest {
 
         String dummyType = "dummy";
         boolean result = xType.dropTokenType(dummyType);
-
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -467,7 +467,7 @@ public class TokenTypeTest {
         String dataType = "Integer";
         String initialValue = Integer.toString(20200110);
         boolean result = xType.enrollAttributeOfTokenType(docType,attribute, dataType, initialValue);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -521,7 +521,7 @@ public class TokenTypeTest {
         String initialValue = "2020-01-10";
         List<String> pair = new ArrayList<>(Arrays.asList(dataType, initialValue));
         boolean result = xType.updateAttributeOfTokenType(docType,attribute, pair);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 
     @Test
@@ -627,6 +627,6 @@ public class TokenTypeTest {
         String docType = "doc";
         String attribute = "date";
         boolean result = xType.dropAttributeOfTokenType(docType,attribute);
-        assertEquals(result, true);
+        assertTrue(result);
     }
 }
