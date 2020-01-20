@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 @Controller
@@ -147,13 +150,16 @@ public class ERC721Controller extends ExceptionHandleController {
         return new HttpResponse(HttpResponse.success, String.valueOf(balance));
     }
 
-    @RequestMapping(value = "/erc721/ownerOf", method = RequestMethod.POST)
     @ResponseBody
-    public HttpResponse ownerOf(@RequestParam String certiPassword,
-                                @RequestParam MultipartFile certfile, HttpServletRequest request,
-                                @RequestParam String tokenId) throws Exception {
+    @PostMapping("/erc721/ownerOf")
+    //@RequestMapping(value = "/erc721/ownerOf", method = RequestMethod.POST)
+    public RedirectView ownerOf(HttpServletRequest req, MultipartHttpServletRequest mre) throws Exception {
 
+        String tokenId = req.getParameter("tokenId");
+        String certiPassword = req.getParameter("certiPassword");
+        MultipartFile certfile = mre.getFile("certfile");
 
+        logger.info("/erc721/ownerOf ########################" + certfile.getOriginalFilename());
         PosCertificate posCertificate = null;
         try {
             posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
@@ -185,7 +191,9 @@ public class ERC721Controller extends ExceptionHandleController {
 
         Manager.setChaincodeId(chaincodeId);
         String owner = erc721.ownerOf(tokenId);
-        return new HttpResponse(HttpResponse.success, owner);
+
+        logger.info(owner);
+        return new RedirectView("/addUser");
     }
 
     @RequestMapping(value = "/erc721/transferFrom", method = RequestMethod.POST)

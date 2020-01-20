@@ -68,18 +68,18 @@ public class WebAppInitializer implements WebApplicationInitializer {
 	private void initializeEncodingFilter(ServletContext servletContext) {
 		FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("characterEncodingFilter", CharacterEncodingFilter.class);
 		filterRegistration.setInitParameter("encoding", "UTF-8");
-		filterRegistration.addMappingForUrlPatterns(null, false, "/*");
+		//filterRegistration.addMappingForUrlPatterns(null, false, "/*");
 		filterRegistration.setAsyncSupported(true);
 	}
 	
 	private void initializeSitemeshFilter(ServletContext servletContext) {
 		FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("sitemeshFilter", SiteMeshFilter.class);
-		filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.FORWARD), false, "/*");
+//		filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.FORWARD), false, "/*");
 	}
 
 	private void initializeRequestFilter(ServletContext servletContext) {
 		FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("requestFilter", RequestFilter.class);
-		filterRegistration.addMappingForUrlPatterns(null, false, "/*");
-		filterRegistration.setInitParameter("excludePatterns", "/assets/**, /fonts/**, /images/**, /css/**, /js/**, /**/*.js, /**/*.jpg, /**/*.png, /**/*.css");
+		//filterRegistration.addMappingForUrlPatterns(null, false, "/*");
+		filterRegistration.setInitParameter("excludePatterns", "/assets/**, /fonts/**, /images/**, /css/**, /js/**, /**/*.js, /**/*.jpg, /**/*.png, /**/*.css, /*");
 	}
 }

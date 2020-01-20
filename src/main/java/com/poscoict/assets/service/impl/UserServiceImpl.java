@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.poscoict.assets.exception.GenericException;
 import com.poscoict.assets.model.UserVo;
-import com.poscoict.assets.persistence.UserDao;
+import com.poscoict.assets.persistence.backup_UserDao;
 import com.poscoict.assets.service.UserService;
 
 @Service
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 	private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 	
 	@Autowired
-	private UserDao userDao;
+	private backup_UserDao userDao;
 
 	/* (non-Javadoc)
 	 * @see com.poscoict.wallet.service.UserService#getUserByCertAddress(java.lang.String)

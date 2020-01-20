@@ -9,10 +9,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.poscoict.assets.model.UserVo;
-import com.poscoict.assets.persistence.UserDao;
+import com.poscoict.assets.persistence.backup_UserDao;
 
 @Repository
-public class UserDaoImpl implements UserDao  {
+public class UserDaoImpl implements backup_UserDao {
 	
 	@Autowired
 	private SqlSession sqlSession;
