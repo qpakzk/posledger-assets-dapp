@@ -3,6 +3,7 @@ package com.poscoict.assets.web.controller;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.protobuf.ByteString;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfImportedPage;
@@ -106,90 +107,9 @@ public class SignatureServiceController extends ExceptionHandleController {
 
 	private String chaincodeId = "assetscc0";
 
-	private int tokenId = 1;
-
-	@PostMapping("/oauth/token")
-	public RedirectView token(HttpServletRequest req, MultipartHttpServletRequest mre) throws Exception {
-
-		String certiPassword = req.getParameter("certiPassword");
-		MultipartFile certfile = mre.getFile("certfile");
+	private int sysTokenId = 1;
 
 
-		if (certfile.isEmpty()) {
-			throw new RestResourceException("첨부 인증서 정보가 없습니다.");
-		}
-
-		PosCertificate posCertificate = null;
-
-		try {
-			posCertificate = (PosCertificate) objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>() {
-			});
-		} catch (Exception e) {
-			logger.error(e);
-			throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
-		}
-
-		// 인증서 비밀번호 검증
-		boolean result = false;
-
-		try {
-			result = posCertificateService.verifyPosCertificatePassword(posCertificate, certiPassword);
-		} catch (Exception e) {
-			logger.error(e);
-			throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
-		}
-
-		PosCertificateMeta posCertificateMeta = new PosCertificateMeta();
-
-		if (result) {
-
-			try {
-				posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, certiPassword, message.getMessage("application.posledger.challenge.domain"));
-			} catch (Exception e) {
-				logger.error(e);
-				throw new RestResourceException(e.getLocalizedMessage());
-			}
-
-			if (posCertificateMeta == null) {
-				throw new RestResourceException("블록체인에 저장된 인증서 정보가 없습니다.");
-			}
-
-			try {
-				UserVo user = new UserVo();
-
-				user.setUserId(posCertificateMeta.getOwnerId());
-				user.setOrgCode(posCertificateMeta.getOrgCode());
-				user.setUserType(posCertificateMeta.getOwnerType());
-				user.setCertAddress(posCertificate.getAddress());
-				user.setDeviceAddress(posCertificateMeta.getDevices());
-				user.setPushToken("");
-				user.setRegistDate(DateUtil.getDateObject());
-
-				//userService.createUser(user);
-
-				// 사용자 세션 저장
-				req.getSession().setAttribute("sessionUser", posCertificateMeta.getOwnerKey());
-				req.getSession().setAttribute("joinUserId", posCertificateMeta.getOwnerId());
-				req.getSession().setAttribute("joinUserOrgCode", posCertificateMeta.getOrgCode());
-
-				if(posCertificateMeta.getOwnerId().equals("ADMIN")) {
-					return new RedirectView("/admin");
-				}
-
-				SqlRowSet srs = null;
-				srs = userDao.getUserByUserId(posCertificateMeta.getOwnerId());
-				if(!srs.next())
-					userDao.insert(posCertificateMeta.getOwnerKey(), posCertificateMeta.getOwnerId());
-				//user_sigDao.insert("1FbLcUY39EmYSjtxjpHSVKEeUZQNKAvooa", 1);
-
-			} catch (Exception e) {
-				logger.error(e);
-				throw new RestResourceException(e.getLocalizedMessage());
-			}
-		}
-
-		return new RedirectView("/main");
-	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ResponseBody
@@ -353,10 +273,10 @@ public class SignatureServiceController extends ExceptionHandleController {
 		// insert tokenId into DB
 		int tokenNum;
 		Map<String, Object> testMapForToken = tokenDao.getTokenNum();
-		tokenDao.insert(tokenId);
+		tokenDao.insert(sysTokenId);
 
 		// insert sig's info into DB
-		sigDao.insert(sigId, filenm, tokenId-1);
+		sigDao.insert(sigId, filenm, sysTokenId-1);
 		Map<String, Object> testMap = sigDao.getSigBySigid(sigId);
 		int sigNum = (int)testMap.get("sigNum");
 
@@ -367,7 +287,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		String merkleLeaf[] = new String[3];
 		merkleLeaf[0] = sigId;
 		merkleLeaf[1] = filenm;
-		merkleLeaf[2] = valueOf(tokenId-1);
+		merkleLeaf[2] = valueOf(sysTokenId-1);
 
 //		String merkleRoot = merkleTree.merkleRoot(merkleLeaf, 0, merkleLeaf.length-1);
 //		logger.info(merkleRoot);
@@ -392,8 +312,8 @@ public class SignatureServiceController extends ExceptionHandleController {
 		uri.put("hash", merkleroot);
 
 
-		xnft.mint(valueOf(tokenId-1), "sig", owner, xattr, uri);
-		tokenId++;
+		xnft.mint(valueOf(sysTokenId-1), "sig", owner, xattr, uri);
+		sysTokenId++;
 
 		return new RedirectView("main");
 	}
@@ -526,23 +446,23 @@ public class SignatureServiceController extends ExceptionHandleController {
 
 
 		// insert tokenId into DB
-		tokenDao.insert(tokenId);
+		tokenDao.insert(sysTokenId);
 
 		// insert document's info into DB
-		docDao.insert(original, mf.getOriginalFilename(), tokenId-1, owner);
+		docDao.insert(original, mf.getOriginalFilename(), sysTokenId-1, owner);
 
 		// insert key for user and document into DB
 		int docNum;
-		Map<String, Object> testMap = docDao.getDocNum();
-		docNum = parseInt(String.valueOf(testMap.get("auto_increment")));
+		Map<String, Object> testMap = docDao.getDocByDocTokenId(valueOf(sysTokenId-1));
+		docNum = parseInt(String.valueOf(testMap.get("docnum")));
 
-		user_docDao.insert(owner, --docNum);
+		user_docDao.insert(owner, docNum);
 
 		// create merkleRoot for off-chain data verification
 		String merkleLeaf[] = new String[4];
 		merkleLeaf[0] = original;
 		merkleLeaf[1] = mf.getOriginalFilename();
-		merkleLeaf[2] = valueOf(tokenId-1);
+		merkleLeaf[2] = valueOf(sysTokenId-1);
 
 		String merkleRoot = "HASH";//MerkleTree.merkleRoot(merkleLeaf, 0, merkleLeaf.length-1);
 		logger.info(merkleRoot);
@@ -578,8 +498,8 @@ public class SignatureServiceController extends ExceptionHandleController {
 		uri.put("hash", merkleroot);
 
 		String type = "doc";
-		boolean result = xnft.mint(valueOf(tokenId-1), type, owner, xattr, uri);
-		tokenId++;
+		boolean result = xnft.mint(valueOf(sysTokenId-1), type, owner, xattr, uri);
+		sysTokenId++;
 		return new RedirectView("main"); //null;//"redirect:/main";
 	}
 
@@ -736,7 +656,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 			hash = (String) xattr.get("hash");
 		}
 
-
+		result += "tokenId : " + tokenId + "\n";
 		result += "owner : " + ownerKey + "\n";
 		result += "hash : " + hash + "\n";
 		result += "signatures : " + signers;
@@ -750,7 +670,6 @@ public class SignatureServiceController extends ExceptionHandleController {
 	public RedirectView doSign(HttpServletRequest req, Model model) throws Exception{
 
 		int docNum = parseInt(String.valueOf(req.getParameter("docNum")));
-		String docId = req.getParameter("docId");
 		String sigId = req.getParameter("sigId");
 		String signer = req.getParameter("signer");
 		String docTokenId = req.getParameter("tokenId");
@@ -807,7 +726,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		for(int i=0; i<signersResult.length; i++) {
 			signersResult[i] = "";
 		}
-		signersResult[0] = "All participants : ";
+		signersResult[0] = "Participants : ";
 		signersResult[1] = "Current signatures : ";
 
 		/*
@@ -932,7 +851,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 			PdfContentByte cb = writer.getDirectContent();
 
 			// Load existing PDF
-			PdfReader reader = new PdfReader(docPath);	// absolute path needed
+			PdfReader reader = new PdfReader("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+docPath);	// absolute path needed
 			for(int i=1; i<=reader.getNumberOfPages(); i++) {
 				PdfImportedPage page = writer.getImportedPage(reader, i);
 
@@ -975,6 +894,211 @@ public class SignatureServiceController extends ExceptionHandleController {
 
 		model.addAttribute("finalDocPath", "final.pdf");
 		return "finalDoc";
+	}
+
+	@PostMapping("/divideDoc")
+	public String divideDoc(HttpServletRequest req) throws Exception{
+
+		String _firstValue = req.getParameter("firstValue");
+		String _secondValue = req.getParameter("secondValue");
+		String docTokenId = req.getParameter("docTokenId");
+		String ownerKey = req.getParameter("ownerKey");
+		String queryOwnerKey="";
+		String path="";
+		String dividedTokenOne="";
+		String dividedTokenTwo="";
+
+		int firstValue = parseInt(_firstValue);
+		int secondValue = parseInt(_secondValue);
+
+		int firstFromPage = 1;
+		int secondFromPage = secondValue+1;
+
+		String fullPath = "C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\";
+
+		String queryResult = eerc721.query(docTokenId);
+		logger.info("tokenId >>> " + docTokenId);
+		logger.info(queryResult);
+
+		if(queryResult != null) {
+			Map<String, Object> map =
+					objectMapper.readValue(queryResult, new TypeReference<HashMap<String, Object>>() {
+					});
+
+			queryOwnerKey = (String) map.get("owner");
+			Map<String, String> uri = (HashMap<String, String>) map.get("uri");
+
+			path = uri.get("path");
+
+		}
+
+		logger.info(ownerKey);
+		logger.info(queryOwnerKey);
+
+		if(!(ownerKey.equals(queryOwnerKey)))
+			return "FAILURE";
+
+		try {
+			PdfReader inputPDF = new PdfReader(fullPath+path);
+
+			int totalPages = inputPDF.getNumberOfPages();
+
+			//make fromPage equals to toPage if it is greater
+//			if(fromPage > toPage ) {
+//				fromPage = toPage;
+//			}
+//			if(toPage > totalPages) {
+//				toPage = totalPages;
+//			}
+
+			logger.info(fullPath+path);
+
+			// Create a writer for the outputstream
+			Document document = new Document(PageSize.A4);
+			OutputStream outputStream = new FileOutputStream(fullPath+sysTokenId+path);
+			PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+
+			document.open();
+			PdfContentByte cb = writer.getDirectContent(); // Holds the PDF data
+			PdfImportedPage page;
+
+			while(firstFromPage <= firstValue) {
+				document.newPage();
+				page = writer.getImportedPage(inputPDF, firstFromPage);
+				cb.addTemplate(page, 0, 0);
+				firstFromPage++;
+			}
+
+			outputStream.flush();
+			document.close();
+			outputStream.close();
+
+			String original = "";
+			InputStream is = null;
+
+			try {
+				/*
+				 * getting hash of document
+				 */
+				final MessageDigest md = MessageDigest.getInstance("SHA-512");
+
+				is = new FileInputStream(fullPath+valueOf(sysTokenId-1)+path);	// absolute path needed
+				byte[] buffer = new byte[1024];
+				int readBytes = 0;
+
+				while ((readBytes = is.read(buffer)) > -1) {
+					md.update(buffer, 0, readBytes);
+				}
+
+				StringBuilder builder = new StringBuilder();
+				byte[] digest = md.digest();
+				for(byte b : digest) {
+					builder.append(Integer.toHexString(0xff & b));
+				}
+
+				// hash of document
+				original = builder.toString();
+
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			tokenDao.insert(sysTokenId);
+			docDao.insert(original, sysTokenId-1+path, sysTokenId-1, "");
+			dividedTokenOne = valueOf(sysTokenId-1);
+
+			int docNum;
+			Map<String, Object> testMap = docDao.getDocByDocTokenId(valueOf(sysTokenId-1));
+			docNum = parseInt(String.valueOf(testMap.get("docnum")));
+
+			user_docDao.insert(ownerKey, docNum);
+			sysTokenId++;
+
+			// Create a writer for the outputstream
+			document = new Document(PageSize.A4);
+			outputStream = new FileOutputStream(fullPath+sysTokenId+path);
+			writer = PdfWriter.getInstance(document, outputStream);
+
+			document.open();
+			cb = writer.getDirectContent(); // Holds the PDF data
+
+			while(secondFromPage <= totalPages) {
+				document.newPage();
+				page = writer.getImportedPage(inputPDF, secondFromPage);
+				cb.addTemplate(page, 0, 0);
+				secondFromPage++;
+			}
+
+			outputStream.flush();
+			document.close();
+			outputStream.close();
+
+			try {
+				/*
+				 * getting hash of document
+				 */
+				final MessageDigest md = MessageDigest.getInstance("SHA-512");
+
+				is = new FileInputStream(fullPath+valueOf(sysTokenId-1)+path);	// absolute path needed
+				byte[] buffer = new byte[1024];
+				int readBytes = 0;
+
+				while ((readBytes = is.read(buffer)) > -1) {
+					md.update(buffer, 0, readBytes);
+				}
+
+				StringBuilder builder = new StringBuilder();
+				byte[] digest = md.digest();
+				for(byte b : digest) {
+					builder.append(Integer.toHexString(0xff & b));
+				}
+
+				// hash of document
+				original = builder.toString();
+
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			tokenDao.insert(sysTokenId);
+			docDao.insert(original, sysTokenId-1+path, sysTokenId-1, "");
+			dividedTokenTwo = valueOf(sysTokenId-1);
+
+			testMap = docDao.getDocByDocTokenId(valueOf(sysTokenId-1));
+			docNum = parseInt(String.valueOf(testMap.get("docnum")));
+
+			user_docDao.insert(ownerKey, docNum);
+			sysTokenId++;
+
+			Manager.setChaincodeId(chaincodeId);
+			Manager.setCaller(ownerKey);
+
+			String index = "pages";
+
+			String[] values = { _firstValue, _secondValue };
+			String[] newIds = { dividedTokenOne, dividedTokenTwo };
+			boolean result = eerc721.divide(docTokenId, newIds, values, index);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "SUCCESS";
 	}
 
 	/**

@@ -80,6 +80,6 @@ public class WebAppInitializer implements WebApplicationInitializer {
 	private void initializeRequestFilter(ServletContext servletContext) {
 		FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("requestFilter", RequestFilter.class);
 		//filterRegistration.addMappingForUrlPatterns(null, false, "/*");
-		filterRegistration.setInitParameter("excludePatterns", "/assets/**, /fonts/**, /images/**, /css/**, /js/**, /**/*.js, /**/*.jpg, /**/*.png, /**/*.css, /*");
+		filterRegistration.setInitParameter("excludePatterns", "/admin/**, /assets/**, /fonts/**, /images/**, /css/**, /js/**, /**/*.js, /**/*.jpg, /**/*.png, /**/*.css, /*");
 	}
 }

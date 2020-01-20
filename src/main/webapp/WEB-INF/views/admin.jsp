@@ -8,10 +8,10 @@
     <title>PosLedger Assets Application</title>
     <meta charset="UTF-8">
 
-    <link href="../../../common/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
+    <link href="../../common/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- Custom styles for this template -->
-    <link href="../../../common/shop-item.css" rel="stylesheet">
+    <link href="../../common/shop-item.css" rel="stylesheet">
 </head>
 <body onload="init()">
 
@@ -51,42 +51,29 @@
             <h1 class="my-4">Signature Service</h1>
             <div class="list-group">
                 <a href="#" class="list-group-item active">enrollTokenType</a>
-                <a href="/mysign?ownerKey=${sessionUser}" class="list-group-item">tokenTypesOf</a>
-                <a href="/addUser" class="list-group-item"l>updateTokenType</a>
-                <a href="/mydoclist?ownerKey=${sessionUser}" class="list-group-item">retrieveTokenType</a>
-                <a href="#" class="list-group-item">enrollAttributeOfTokenType</a>
-                <a href="/mysign?ownerKey=${sessionUser}" class="list-group-item">updateAttributeOfTokenType</a>
-                <a href="/addUser" class="list-group-item"l>retrieveAttributeOfTokenType</a>
-                <a href="/mydoclist?ownerKey=${sessionUser}" class="list-group-item">dropAttributeTokenType</a>
-                <a href="/mydoclist?ownerKey=${sessionUser}" class="list-group-item">dropTokenType</a>
+                <a href="/tokenTypesOf" class="list-group-item">tokenTypesOf</a>
+                <a href="/updateTokenType" class="list-group-item"l>updateTokenType</a>
+                <a href="/retrieveTokenType" class="list-group-item">retrieveTokenType</a>
+                <a href="/enrollAttributeOfTokenType" class="list-group-item">enrollAttributeOfTokenType</a>
+                <a href="/updateAttributeOfTokenType" class="list-group-item">updateAttributeOfTokenType</a>
+                <a href="/retrieveAttributeOfTokenType" class="list-group-item"l>retrieveAttributeOfTokenType</a>
+                <a href="/dropAttributeTokenType" class="list-group-item">dropAttributeTokenType</a>
+                <a href="/dropTokenType" class="list-group-item">dropTokenType</a>
             </div>
         </div>
         <!-- /.col-lg-3 -->
 
         <div class="col-lg-9">
-
-            <div class="card mt-4">
-                <canvas id="myCanvas" style="background-color:aliceblue" width="850" height="400">
-                </canvas>
-
-                <%--                <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt="">--%>
-                <div class="card-body">
-                    <h3 class="card-title">Signature</h3>
-
-                </div>
-            </div>
-
             <div class="card card-outline-secondary my-4">
-                <div class="card-header">
-                    Store Your Signature
+                <div class="card-header" style="height:200px">
+                    <h1></h1>
                 </div>
-                <div class="card-body" align="right">
+                <div class="card-body" style="height:600px">
 
-                    <input type="hidden" id="signer" value="${sessionUser}">
-                    <input type="submit" class="btn btn-success"  value="store" onclick="store(this)">
 
                 </div>
             </div>
+
         </div>
     </div>
 </div>

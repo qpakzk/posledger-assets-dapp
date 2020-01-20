@@ -62,7 +62,7 @@
         <!-- /.col-lg-3 -->
 
         <div class="col-lg-9">
-            <div class="card card-outline-secondary my-4">
+            <div class="card card-outline-secondary my-4" style="width:1000px">
                 <div class="card-header">
                     <h1>${sessionUser}'s Document List</h1>
                 </div>
@@ -112,6 +112,18 @@
                     <hr>
 <%--                    <a href="#" class="btn btn-success">Leave a Review</a>--%>
                 </div>
+                <div class="card card-outline-secondary my-4">
+                    <div class="card-header">
+                        Store Your Signature
+                    </div>
+                    <div class="card-body" align="left">
+                        Page <input type="text" id="firstValue" > - <input type="text" id="secondValue" > <br>
+                        tokenId<input type="text" id="docTokenId" >
+                        <input type="hidden" id="ownerKey" value="${sessionUser}">
+                        <input type="submit" class="btn btn-success"  value="divide" onclick="divide(this)">
+
+                    </div>
+                </div>
             </div>
             <!-- /.card -->
 
@@ -120,7 +132,6 @@
     </div>
 </div>
 
-<input type="hidden" id="ownerKey" name="ownerKey" value="${sessionUser}">
 <%--
 <c:forEach items="${docList}" var="docList">
     <a href="">${list}</a>
@@ -128,6 +139,7 @@
 --%>
 </body>
 <script>
+
     function checkStatus(tokenId) {
 
         $.ajax({
@@ -141,12 +153,43 @@
             //dataType: "json",
             success: function (data) {
                 if(data[2] == 'true')
-                    swal({text: data[1], text: data[0], icon: "success", button: "close",});
+                    swal({title: data[1], text: data[0], icon: "success", button: "close",});
                 else
-                    swal({text: data[1], text: data[0], icon: "error", button: "close",});
+                    swal({title: data[1], text: data[0], icon: "error", button: "close",});
             },
             error: function (err) {
                 swal("error" + err);
+            }
+        });
+    }
+
+    function divide() {
+
+        ownerKey = document.getElementById("ownerKey").value;
+        docTokenId = document.getElementById("docTokenId").value;
+        firstValue = document.getElementById("firstValue").value;
+        secondValue = document.getElementById("secondValue").value;
+
+        $.ajax({
+            type: "POST",
+            url: "/divideDoc",
+            data: {
+                "ownerKey" : ownerKey,
+                "docTokenId": docTokenId,
+                "firstValue" : firstValue,
+                "secondValue" : secondValue
+                //"strImg": dataURL
+                //"test": "test string"
+            },
+            //dataType: "json",
+            success: function (data) {
+                if(data == 'SUCCESS')
+                    swal({ icon: "success", button: "close"});
+                else
+                    swal({ icon: "error", button: "close"});
+            },
+            error: function (err) {
+                swal("error....." + err);
             }
         });
     }

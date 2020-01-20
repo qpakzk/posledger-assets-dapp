@@ -47,6 +47,15 @@ public class DocDao {
         //return jdbcTemplate.query(query, new BeanPropertyRowMapper<Doc>(Doc.class));
     }
 
+    public Map<String, Object>/*List<Doc>*/ getDocByDocTokenId(String docTokenId) throws Exception {
+
+        String query = "select * from Doc where docid = ?";
+        Object key = docTokenId;
+        return this.jdbcTemplate.queryForMap("select * from Doc where docTokenId = ?", docTokenId);
+        //String query = "select * from test";
+        //return jdbcTemplate.query(query, new BeanPropertyRowMapper<Doc>(Doc.class));
+    }
+
     public Map<String, Object>/*List<Doc>*/ getDocByDocIdAndNum(String _docid, int _docnum) throws Exception {
 
         String query = "select * from Doc where docid = " + _docid + " and docnum = ?";
