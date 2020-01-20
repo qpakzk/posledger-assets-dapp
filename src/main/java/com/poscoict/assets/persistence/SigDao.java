@@ -1,6 +1,6 @@
 package com.poscoict.assets.persistence;
 
-import com.poscoict.assets.model.Sig;
+import com.poscoict.assets.model.SigVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,9 +15,9 @@ public class SigDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<Sig> listForBeanPropertyRowMapper(String _sigid) {
+    public List<SigVo> listForBeanPropertyRowMapper(String _sigid) {
         String query = "SELECT * FROM Sign where sigid = '" + _sigid + "'";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<Sig>(Sig.class));
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<SigVo>(SigVo.class));
     }
 
     public int insert(String _sigid, String _path, int _tokenid) {

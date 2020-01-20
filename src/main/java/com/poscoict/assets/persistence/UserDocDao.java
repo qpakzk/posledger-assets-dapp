@@ -1,6 +1,6 @@
 package com.poscoict.assets.persistence;
 
-import com.poscoict.assets.model.User_Doc;
+import com.poscoict.assets.model.UserDocVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class User_docDao {
+public class UserDocDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<User_Doc> listForBeanPropertyRowMapper(String ownerKey) {
+    public List<UserDocVo> listForBeanPropertyRowMapper(String ownerKey) {
         String query = "SELECT * FROM User_Doc where ownerKey = " + "'" + ownerKey + "'";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<User_Doc>(User_Doc.class));
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<UserDocVo>(UserDocVo.class));
     }
 
-    public List<User_Doc> listForBeanPropertyRowMapperByDocNum(int docnum) {
+    public List<UserDocVo> listForBeanPropertyRowMapperByDocNum(int docnum) {
         String query = "SELECT * FROM User_Doc where docnum = " + "'" + docnum + "'";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<User_Doc>(User_Doc.class));
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<UserDocVo>(UserDocVo.class));
     }
 
     public int insert(String ownerKey, int _docnum) {

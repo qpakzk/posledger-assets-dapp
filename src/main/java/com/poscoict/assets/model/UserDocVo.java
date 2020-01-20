@@ -1,6 +1,6 @@
 package com.poscoict.assets.model;
 
-public class User_Doc {
+public class UserDocVo {
 
     private String ownerKey;
     private int docnum;

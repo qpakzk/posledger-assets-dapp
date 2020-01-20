@@ -72,6 +72,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 		.excludePathPatterns("/*")
 		.excludePathPatterns("login")
 		.excludePathPatterns("/main")
+		.excludePathPatterns("/admin")
 		.excludePathPatterns("main")
 		.excludePathPatterns("/oauth/token")
 		.excludePathPatterns("addUser")

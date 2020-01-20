@@ -8,8 +8,8 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.poscoict.assets.model.User_Doc;
-import com.poscoict.assets.model.User_Sig;
+import com.poscoict.assets.model.UserDocVo;
+import com.poscoict.assets.model.UserSigVo;
 import com.poscoict.assets.persistence.*;
 import com.poscoict.posledger.chain.assets.chaincode.extension.EERC721;
 import com.poscoict.posledger.chain.assets.chaincode.extension.XNFT;
@@ -56,9 +56,9 @@ import static java.lang.Integer.parseInt;
 import static java.lang.String.valueOf;
 
 @Controller
-public class LoginController extends ExceptionHandleController {
+public class SignatureServiceController extends ExceptionHandleController {
 
-	private static final Logger logger = LogManager.getLogger(LoginController.class);
+	private static final Logger logger = LogManager.getLogger(SignatureServiceController.class);
 
 	@Autowired
 	private UserService userService;
@@ -96,9 +96,9 @@ public class LoginController extends ExceptionHandleController {
 	@Autowired
 	private DocDao docDao;
 	@Autowired
-	private User_sigDao user_sigDao;
+	private UserSigDao user_sigDao;
 	@Autowired
-	private User_docDao user_docDao;
+	private UserDocDao user_docDao;
 	@Autowired
 	private TokenDao tokenDao;
 //	@Autowired
@@ -172,6 +172,10 @@ public class LoginController extends ExceptionHandleController {
 				req.getSession().setAttribute("joinUserId", posCertificateMeta.getOwnerId());
 				req.getSession().setAttribute("joinUserOrgCode", posCertificateMeta.getOrgCode());
 
+				if(posCertificateMeta.getOwnerId().equals("ADMIN")) {
+					return new RedirectView("/admin");
+				}
+
 				SqlRowSet srs = null;
 				srs = userDao.getUserByUserId(posCertificateMeta.getOwnerId());
 				if(!srs.next())
@@ -228,6 +232,13 @@ public class LoginController extends ExceptionHandleController {
 
 		logger.info("index ####################");
 		return "index";
+	}
+
+	@GetMapping("/admin")
+	public String admin() {
+
+		logger.info("admin ####################");
+		return "admin";
 	}
 
 	@GetMapping("/signUpForm")
@@ -404,7 +415,7 @@ public class LoginController extends ExceptionHandleController {
 		/*
 		 * check my signature images
 		 */
-		List<User_Sig> user_sig = user_sigDao.listForBeanPropertyRowMapper(ownerKey);
+		List<UserSigVo> user_sig = user_sigDao.listForBeanPropertyRowMapper(ownerKey);
 		if(user_sig.size() > 0) {
 			logger.info(valueOf(user_sig.get(0).getUserid()));
 			String pathList[] = new String[user_sig.size()];
@@ -589,7 +600,7 @@ public class LoginController extends ExceptionHandleController {
 
 		//queryNFT querynft = new queryNFT();
 
-		List<User_Doc> docList = user_docDao.listForBeanPropertyRowMapper(ownerKey);
+		List<UserDocVo> docList = user_docDao.listForBeanPropertyRowMapper(ownerKey);
 		docId = new String[docList.size()];
 		docNum = new String[docList.size()];
 		docPath = new String[docList.size()];
@@ -661,7 +672,7 @@ public class LoginController extends ExceptionHandleController {
 		 * get my signature image
 		 */
 		Map<String, Object> sigTestMap;// = (user_sigDao.getUserSig(userId));
-		List<User_Sig> user_sig = user_sigDao.listForBeanPropertyRowMapper(ownerKey);
+		List<UserSigVo> user_sig = user_sigDao.listForBeanPropertyRowMapper(ownerKey);
 
 		for (int i = 0; i < user_sig.size(); i++) {
 			sigTestMap = sigDao.getSigBySigNum(user_sig.get(i).getSignum());
@@ -745,7 +756,7 @@ public class LoginController extends ExceptionHandleController {
 		String docTokenId = req.getParameter("tokenId");
 		String signature="";
 
-		List<User_Sig> user_sig = user_sigDao.listForBeanPropertyRowMapper(signer);
+		List<UserSigVo> user_sig = user_sigDao.listForBeanPropertyRowMapper(signer);
 		if(user_sig.size() == 0)
 			return new RedirectView("main");
 
@@ -873,7 +884,7 @@ public class LoginController extends ExceptionHandleController {
 		//model.addAttribute("docList", user_docDao.listForBeanPropertyRowMapper(docId));
 
 		Map<String, Object> docTestMap = docDao.getDocByDocIdAndNum(docId, docNum);
-		List<User_Doc> userList = user_docDao.listForBeanPropertyRowMapperByDocNum((int)docTestMap.get("docnum"));
+		List<UserDocVo> userList = user_docDao.listForBeanPropertyRowMapperByDocNum((int)docTestMap.get("docnum"));
 
 		sigPathList = new String[userList.size()];
 		userId = new String[userList.size()];

@@ -1,6 +1,6 @@
 package com.poscoict.assets.model;
 
-public class Sig {
+public class SigVo {
 
     private  int sigNum;
     private String signID;

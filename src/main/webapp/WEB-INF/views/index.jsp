@@ -25,9 +25,9 @@
             <input type="submit" class="fadeIn fourth" value="Log In">
         </form>
 
-        <div id="formFooter">
-            <a class="underlineHover" href="/signUpForm">Sign Up</a>
-        </div>
+<%--        <div id="formFooter">--%>
+<%--            <a class="underlineHover" href="/signUpForm">Sign Up</a>--%>
+<%--        </div>--%>
 
     </div>
 </div>

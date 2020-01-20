@@ -1,6 +1,6 @@
 package com.poscoict.assets.persistence;
 
-import com.poscoict.assets.model.User_Sig;
+import com.poscoict.assets.model.UserSigVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class User_sigDao {
+public class UserSigDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<User_Sig> listForBeanPropertyRowMapper(String ownerKey) {
+    public List<UserSigVo> listForBeanPropertyRowMapper(String ownerKey) {
         String query = "SELECT * FROM User_Sig where ownerKey = " + "'" + ownerKey + "'";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<User_Sig>(User_Sig.class));
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<UserSigVo>(UserSigVo.class));
     }
 
     public int insert(String ownerKey, int sigNum) {

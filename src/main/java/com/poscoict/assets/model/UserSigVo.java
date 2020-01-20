@@ -1,6 +1,6 @@
 package com.poscoict.assets.model;
 
-public class User_Sig {
+public class UserSigVo {
 
     private String userid;
     private int signum;
