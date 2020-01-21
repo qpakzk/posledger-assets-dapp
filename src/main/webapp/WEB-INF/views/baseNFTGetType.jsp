@@ -33,11 +33,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="/enrollTokenType">TokenType</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="#">Standard NFT</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/divide">Extenstion NFT</a>
             </ul>
         </div>
     </div>
@@ -50,73 +52,38 @@
         <div class="col-lg-3">
             <h1 class="my-4">Signature Service</h1>
             <div class="list-group">
-                <a href="/enrollTokenType" class="list-group-item ">enrollTokenType</a>
-                <a href="/tokenTypesOf" class="list-group-item">tokenTypesOf</a>
-                <a href="/updateTokenType" class="list-group-item"l>updateTokenType</a>
-                <a href="/retrieveTokenType" class="list-group-item">retrieveTokenType</a>
-                <a href="#" class="list-group-item active">enrollAttributeOfTokenType</a>
-                <a href="/updateAttributeOfTokenType" class="list-group-item">updateAttributeOfTokenType</a>
-                <a href="/retrieveAttributeOfTokenType" class="list-group-item"l>retrieveAttributeOfTokenType</a>
-                <a href="/dropAttributeTokenType" class="list-group-item ">dropAttributeTokenType</a>
-                <a href="/dropTokenType" class="list-group-item ">dropTokenType</a>
+                <a href="#" class="list-group-item active">Make signature</a>
+                <a href="/mysign?ownerKey=${sessionUser}" class="list-group-item">My Signature</a>
+                <a href="/addUser" class="list-group-item"l>Upload File</a>
+                <a href="/mydoclist?ownerKey=${sessionUser}" class="list-group-item">My Document</a>
             </div>
         </div>
         <!-- /.col-lg-3 -->
 
         <div class="col-lg-9">
-            <div class="card card-outline-secondary my-4">
-                <div class="card-header">
-                    <h1>${sessionUser}'s Document List</h1>
-                </div>
+
+            <div class="card mt-4">
+                <canvas id="myCanvas" style="background-color:aliceblue" width="850" height="400">
+                </canvas>
+
+                <%--                <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt="">--%>
                 <div class="card-body">
-                    <%
-                        //List<User_Doc> docList = (List<User_Doc>)request.getAttribute("docList");
-                        //User_Doc doc;
+                    <h3 class="card-title">Signature</h3>
 
-                        String docList[] = (String[])request.getAttribute("docIdList");
-                        String docPathList[] = (String[])request.getAttribute("docPathList");
-                        String docNum[] = (String[])request.getAttribute("docNumList");
-                        String tokenId[] = (String[])request.getAttribute("tokenIdList");
-                        String sigStatus[] = (String[])request.getAttribute("sigStatus");
-                        String ownerKey = (String)request.getAttribute("ownerKey");
-                        String token="";
-                        String sigProcess="";
-                        String docid[] = new String[docList.length];
-
-                        String queryDoc="";
-                        int i=0;
-                        for(i=0; i<docid.length; i++) {
-                            docid[i] = "<a href=/mydoc?ownerKey=" + ownerKey + "&docid=" + docList[i] + "&docnum=" + docNum[i] + "&tokenid=" + tokenId[i] +">" + docPathList[i] + "</a>";
-                            queryDoc = "<a href=/queryDoc?docid=" + docList[i] + "&docnum=" + docNum[i] + "&tokenid=" + tokenId[i] + ">" + "- Final Document " + "</a>";
-                            if(sigStatus[i].equals("true"))
-                                sigProcess= " <button type='button' class='btn btn-success'  style='width: 30pt; height:28pt; float:right;' onclick=checkStatus("+tokenId[i]+")>O</button> ";
-                            else
-                                sigProcess= " <button type='button' class='btn btn-danger'  style='width: 30pt; height:28pt; float:right;' onclick=checkStatus("+tokenId[i]+")>X</button> ";
-                            token = " <input type=submit value='√' class='btn btn-outline-info' style='background-image:url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY5Mu3vrHZi-N1ntwu6F0lTYc2IQekwho9WjK1gl5s_BxWwhI); style='width: 2pt; height:20pt; float:right;' onclick=checkStatus("+tokenId[i]+")> ";
-
-                    %>
-                    <table width="750px">
-                        <tr>
-                            <td>
-                                <%=docid[i]%>
-                                <%=queryDoc%>
-                            </td>
-                            <td align="right">
-                                <%--<%=token%>&nbsp--%>
-                                <%=sigProcess%>
-                            </td>
-                        </tr>
-                    </table>
-                    <hr>
-                    <%
-                        }
-                    %>
-                    <hr>
-                    <%--                    <a href="#" class="btn btn-success">Leave a Review</a>--%>
                 </div>
             </div>
-            <!-- /.card -->
 
+            <div class="card card-outline-secondary my-4">
+                <div class="card-header">
+                    Store Your Signature
+                </div>
+                <div class="card-body" align="right">
+
+                    <input type="hidden" id="signer" value="${sessionUser}">
+                    <input type="submit" class="btn btn-success"  value="store" onclick="store(this)">
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

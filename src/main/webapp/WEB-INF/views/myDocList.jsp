@@ -64,7 +64,7 @@
         <div class="col-lg-9">
             <div class="card card-outline-secondary my-4" style="width:1000px">
                 <div class="card-header">
-                    <h1>${sessionUser}'s Document List</h1>
+                    <h1>${ownerId}'s Document List</h1>
                 </div>
                 <div class="card-body">
                     <%
@@ -183,10 +183,7 @@
             },
             //dataType: "json",
             success: function (data) {
-                if(data == 'SUCCESS')
-                    swal({ icon: "success", button: "close"});
-                else
-                    swal({ icon: "error", button: "close"});
+                swal({ icon: "success", button: "close"});
             },
             error: function (err) {
                 swal("error....." + err);

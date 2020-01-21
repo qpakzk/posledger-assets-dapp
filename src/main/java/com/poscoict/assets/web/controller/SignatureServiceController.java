@@ -172,11 +172,11 @@ public class SignatureServiceController extends ExceptionHandleController {
 	@RequestMapping("/img")
 	public RedirectView img (HttpServletRequest req) throws Exception {
 
-		String owner = req.getParameter("owner");
+		String ownerKey = req.getParameter("ownerKey");
 		String signer = req.getParameter("signer");
 		String strImg = req.getParameter("strImg");
 
-		logger.info(" > " + owner);
+		logger.info(" > " + ownerKey);
 		logger.info(" > " + signer);
 		logger.info(" > " + strImg);
 
@@ -297,7 +297,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		//mintNFT.mint(tokenNum, owner, sigId, filenm, merkleRoot);
 
 		Manager.setChaincodeId(chaincodeId);
-		Manager.setCaller(owner);
+		Manager.setCaller(ownerKey);
 
 		Map<String, Object> xattr = new HashMap<>();
 
@@ -312,7 +312,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		uri.put("hash", merkleroot);
 
 
-		xnft.mint(valueOf(sysTokenId-1), "sig", owner, xattr, uri);
+		xnft.mint(valueOf(sysTokenId-1), "sig", ownerKey, xattr, uri);
 		sysTokenId++;
 
 		return new RedirectView("main");
@@ -367,7 +367,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 			user = new String[parseInt(count)];
 			for(int i=0; i<user.length; i++) {
 				try {
-					testMap = userDao.getUser(req.getParameter("ID"+i));
+					testMap = userDao.getOwnerKey(req.getParameter("ID"+i));
 				} catch (RuntimeException e) {
 					if(testMap == null)
 						return new RedirectView("main");
@@ -471,7 +471,9 @@ public class SignatureServiceController extends ExceptionHandleController {
 		Manager.setCaller(owner);
 
 		Map<String, Object> xattr = new HashMap<>();
-		int pages = 100;
+		PdfReader reader = new PdfReader(new PdfReader("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+mf.getOriginalFilename()));
+		int pages = reader.getNumberOfPages();
+		reader.close();
 		String hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
 		List<String> signers = new ArrayList<>();
 		signers.add(owner);
@@ -480,7 +482,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		if(user != null) {
 			Map<String, Object> userMap;
 			for(int i=0; i<user.length; i++) {
-				userMap = userDao.getUser(user[i]);
+				userMap = userDao.getOwnerKey(user[i]);
 				user_docDao.insert((String)userMap.get("ownerKey"), docNum);
 				signers.add((String)userMap.get("ownerKey"));
 			}
@@ -896,7 +898,8 @@ public class SignatureServiceController extends ExceptionHandleController {
 		return "finalDoc";
 	}
 
-	@PostMapping("/divideDoc")
+	@ResponseBody
+	@RequestMapping("/divideDoc")
 	public String divideDoc(HttpServletRequest req) throws Exception{
 
 		String _firstValue = req.getParameter("firstValue");

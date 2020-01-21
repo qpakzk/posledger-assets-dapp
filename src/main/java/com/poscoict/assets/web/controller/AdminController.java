@@ -1,5 +1,6 @@
 package com.poscoict.assets.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poscoict.assets.exception.RestResourceException;
@@ -9,26 +10,37 @@ import com.poscoict.assets.service.UserService;
 import com.poscoict.posledger.chain.DateUtil;
 import com.poscoict.posledger.chain.assets.chaincode.extension.EERC721;
 import com.poscoict.posledger.chain.assets.chaincode.extension.XNFT;
+import com.poscoict.posledger.chain.assets.chaincode.extension.XType;
 import com.poscoict.posledger.chain.assets.chaincode.standard.BaseNFT;
 import com.poscoict.posledger.chain.assets.chaincode.standard.ERC721;
+import com.poscoict.posledger.chain.assets.chaincode.util.Manager;
 import com.poscoict.posledger.chain.sign.certificate.PosCertificateService;
 import com.poscoict.posledger.chain.sign.model.PosCertificate;
 import com.poscoict.posledger.chain.sign.model.PosCertificateMeta;
 import com.poscoict.posledger.chain.wallet.chaincode.ERC20ChaincodeService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 @Controller
 public class AdminController {
@@ -61,6 +73,9 @@ public class AdminController {
 
     @Autowired
     private XNFT xnft;
+
+    @Autowired
+    private XType xType;
 
     public static JdbcTemplate jdbcTemplate;
 
@@ -144,17 +159,17 @@ public class AdminController {
 
                 // 사용자 세션 저장
                 req.getSession().setAttribute("sessionUser", posCertificateMeta.getOwnerKey());
-                req.getSession().setAttribute("joinUserId", posCertificateMeta.getOwnerId());
+                req.getSession().setAttribute("ownerId", posCertificateMeta.getOwnerId());
                 req.getSession().setAttribute("joinUserOrgCode", posCertificateMeta.getOrgCode());
-
-                if(posCertificateMeta.getOwnerId().equals("ADMIN")) {
-                    return new RedirectView("/admin");
-                }
 
                 SqlRowSet srs = null;
                 srs = userDao.getUserByUserId(posCertificateMeta.getOwnerId());
                 if(!srs.next())
                     userDao.insert(posCertificateMeta.getOwnerKey(), posCertificateMeta.getOwnerId());
+
+                if(posCertificateMeta.getOwnerId().equals("ADMIN")) {
+                    return new RedirectView("/admin");
+                }
                 //user_sigDao.insert("1FbLcUY39EmYSjtxjpHSVKEeUZQNKAvooa", 1);
 
             } catch (Exception e) {
@@ -166,59 +181,256 @@ public class AdminController {
         return new RedirectView("/main");
     }
 
-    @GetMapping("/tokenTypesOf")
-    public String tokenTypesOf() {
+    @PostMapping("/enrollTokenType")
+    public String enrollTokenType(HttpServletRequest req) throws JsonProcessingException, ProposalException, InvalidArgumentException {
+
+        logger.info("enrollTokenType ####################");
+
+        String ownerKey = req.getParameter("ownerKey");
+        String tokenType = req.getParameter("tokenType");
+        int xattrCount = parseInt(req.getParameter("xattrCount"));
+        //int uriCount = parseInt(req.getParameter("uriCount"));
+
+        String xattrName = "";
+        String xattrType = "";
+        String xattrValue = "";
+
+        Map<String, List<String>> xattr = new HashMap<>();
+
+        for(int i=0; i<xattrCount; i++) {
+            xattrName = req.getParameter("xattrName" + i);
+            xattrType = req.getParameter("xattrType" + i);
+
+            if (xattrType.equals("String"))
+                xattrValue = "";
+            else if (xattrType.equals("[String]"))
+                xattrValue = "[String]";
+            else if (xattrType.equals("Integer"))
+                xattrValue = "0";
+            else if (xattrType.equals("Boolean"))
+                xattrValue = "";
+            else
+                return "FAILURE";
+
+            xattr.put(xattrName, new ArrayList<>(Arrays.asList(xattrType, xattrValue)));
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        boolean result = xType.enrollTokenType(tokenType, xattr);
+
+        return "/admin";
+    }
+
+    @GetMapping("/adminTokenTypesOf")
+    public String adminTokenTypesOf(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminTokenTypesOf";
+    }
+
+    @ResponseBody
+    @RequestMapping("/tokenTypesOf")
+    public String tokenTypesOf(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        String result = "";
+
+        Manager.setChaincodeId(chaincodeId);
+        List<String> types = xType.tokenTypesOf();
+
+        for(int i=0; i<types.size(); i++) {
+            result += "type " + i + " : " + types.get(i) + "\n";
+        }
 
         logger.info("tokenTypesOf ####################");
-        return "tokenTypesOf";
+        return result;
     }
 
-    @GetMapping("/updateTokenType")
-    public String updateTokenType() {
+    @GetMapping("/adminUpdateTokenType")
+    public String adminUpdateTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
 
-        logger.info("updateTokenType ####################");
-        return "updateTokenType";
+        return "/adminUpdateTokenType";
     }
 
-    @GetMapping("/retrieveTokenType")
-    public String retrieveTokenType() {
+    @PostMapping("/updateTokenType")
+    public String updateTokenType(HttpServletRequest req) throws JsonProcessingException, ProposalException, InvalidArgumentException {
+
+        String ownerKey = req.getParameter("ownerKey");
+
+        String tokenType = req.getParameter("tokenType");
+        int xattrCount = parseInt(req.getParameter("xattrCount"));
+
+        String xattrName = "";
+        String xattrType = "";
+        String xattrValue = "";
+
+        Map<String, List<String>> attributes = new HashMap<>();
+
+        for(int i=0; i<xattrCount; i++) {
+            xattrName = req.getParameter("xattrName" + i);
+            xattrType = req.getParameter("xattrType" + i);
+            xattrValue = req.getParameter("xattrValue" + i);
+
+            attributes.put(xattrName, new ArrayList<>(Arrays.asList(xattrType, xattrValue)));
+        }
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        boolean result = xType.updateTokenType(tokenType, attributes);
+        return "/adminUpdateTokenType";
+    }
+
+    @GetMapping("/adminRetrieveTokenType")
+    public String adminRetrieveTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminRetrieveTokenType";
+    }
+
+    @ResponseBody
+    @RequestMapping("/retrieveTokenType")
+    public String retrieveTokenType(HttpServletRequest req) throws ProposalException, IOException, InvalidArgumentException {
+
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        Map<String, List<String>> attributes = xType.retrieveTokenType(tokenType);
+
+        logger.info(attributes.toString());
+        List<String> keys = new ArrayList<>(attributes.keySet());
+
+        String result = "";
+        for(int i = 0; i<keys.size(); i++) {
+            result += "Attributes" + i + " : " + keys.get(i) + "\n";
+        }
 
         logger.info("retrieveTokenType ####################");
-        return "retrieveTokenType";
+        return result;
     }
 
-    @GetMapping("/enrollAttributeOfTokenType")
-    public String enrollAttributeOfTokenType() {
+    @GetMapping("/adminEnrollAttributeOfTokenType")
+    public String adminEnrollAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminEnrollAttributeOfTokenType";
+    }
+
+    @ResponseBody
+    @RequestMapping("/enrollAttributeOfTokenType")
+    public String enrollAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
 
         logger.info("enrollAttributeOfTokenType ####################");
-        return "enrollAttributeOfTokenType";
+
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+        String attribute = (req.getParameter("xattrName"));
+        String dataType = req.getParameter("xattrType");
+        String initialValue = req.getParameter("initialValue");
+
+        logger.info(tokenType + " " + " " + ownerKey + " " + attribute + " " +dataType + " " + initialValue);
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        boolean result = xType.enrollAttributeOfTokenType(tokenType, attribute, dataType, initialValue);
+        if(result == true)
+            return "true";
+        else
+            return "false";
     }
 
-    @GetMapping("/updateAttributeOfTokenType")
-    public String updateAttributeOfTokenType() {
+    @GetMapping("/adminUpdateAttributeOfTokenType")
+    public String adminUpdateAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminUpdateAttributeOfTokenType";
+    }
+
+    @ResponseBody
+    @RequestMapping("/updateAttributeOfTokenType")
+    public String updateAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
 
         logger.info("updateAttributeOfTokenType ####################");
-        return "updateAttributeOfTokenType";
+
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+        String attribute = (req.getParameter("xattrName"));
+        String dataType = req.getParameter("xattrType");
+        String initialValue = req.getParameter("initialValue");
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        List<String> pair = new ArrayList<>(Arrays.asList(dataType, initialValue));
+        boolean result = xType.updateAttributeOfTokenType(tokenType, attribute, pair);
+        if(result == true)
+            return "true";
+        else
+            return "false";
     }
 
-    @GetMapping("/retrieveAttributeOfTokenType")
-    public String retrieveAttributeOfTokenType() {
+    @GetMapping("/adminRetrieveAttributeOfTokenType")
+    public String adminRetrieveAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminRetrieveAttributeOfTokenType";
+    }
+
+    @PostMapping("/retrieveAttributeOfTokenType")
+    public String retrieveAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+        String attribute = (req.getParameter("attribute"));
 
         logger.info("retrieveAttributeOfTokenType ####################");
-        return "retrieveAttributeOfTokenType";
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        List<String> pair = xType.retrieveAttributeOfTokenType(tokenType, attribute);
+        logger.info(pair.toString());
+
+        return pair.toString();
     }
 
-    @GetMapping("/dropAttributeTokenType")
-    public String dropAttributeTokenType() {
+    @GetMapping("/adminDropAttributeTokenType")
+    public String adminDropAttributeTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminDropAttributeTokenType";
+    }
+
+    @PostMapping("/dropAttributeTokenType")
+    public String dropAttributeTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+        String attribute = (req.getParameter("attribute"));
 
         logger.info("dropAttributeTokenType ####################");
-        return "dropAttributeTokenType";
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+
+        boolean result = xType.dropAttributeOfTokenType(tokenType, attribute);
+        if(result == true)
+            return "true";
+        else
+            return "false";
+
     }
 
-    @GetMapping("/dropTokenType")
+    @GetMapping("/adminDropTokenType")
+    public String adminDropTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
+
+        return "/adminDropTokenType";
+    }
+
+    @PostMapping("/dropTokenType")
     public String dropTokenType() {
 
         logger.info("dropTokenType ####################");
+
         return "dropTokenType";
     }
 

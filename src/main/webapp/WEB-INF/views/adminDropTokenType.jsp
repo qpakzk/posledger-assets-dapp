@@ -33,10 +33,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="#">TokenType</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/baseNFTMint">Standard NFT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/divide">Extenstion NFT</a>
                 </li>
             </ul>
         </div>
@@ -50,14 +53,14 @@
         <div class="col-lg-3">
             <h1 class="my-4">Signature Service</h1>
             <div class="list-group">
-                <a href="/enrollTokenType" class="list-group-item ">enrollTokenType</a>
-                <a href="/tokenTypesOf" class="list-group-item">tokenTypesOf</a>
-                <a href="/updateTokenType" class="list-group-item"l>updateTokenType</a>
-                <a href="/retrieveTokenType" class="list-group-item">retrieveTokenType</a>
-                <a href="/enrollAttributeOfTokenType" class="list-group-item">enrollAttributeOfTokenType</a>
-                <a href="/updateAttributeOfTokenType" class="list-group-item">updateAttributeOfTokenType</a>
-                <a href="/retrieveAttributeOfTokenType" class="list-group-item"l>retrieveAttributeOfTokenType</a>
-                <a href="/dropAttributeTokenType" class="list-group-item ">dropAttributeTokenType</a>
+                <a href="/admin" class="list-group-item ">enrollTokenType</a>
+                <a href="/adminTokenTypesOf" class="list-group-item">tokenTypesOf</a>
+                <a href="/adminUpdateTokenType" class="list-group-item"l>updateTokenType</a>
+                <a href="/adminRetrieveTokenType" class="list-group-item">retrieveTokenType</a>
+                <a href="/adminEnrollAttributeOfTokenType" class="list-group-item">enrollAttributeOfTokenType</a>
+                <a href="/adminUpdateAttributeOfTokenType" class="list-group-item">updateAttributeOfTokenType</a>
+                <a href="/adminRetrieveAttributeOfTokenType" class="list-group-item"l>retrieveAttributeOfTokenType</a>
+                <a href="/adminDropAttributeTokenType" class="list-group-item">dropAttributeTokenType</a>
                 <a href="#" class="list-group-item active">dropTokenType</a>
             </div>
             <div class="col-lg-9">

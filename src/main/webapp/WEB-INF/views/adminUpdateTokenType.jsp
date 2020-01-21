@@ -53,9 +53,9 @@
         <div class="col-lg-3">
             <h1 class="my-4">Signature Service</h1>
             <div class="list-group">
-                <a href="#" class="list-group-item active">enrollTokenType</a>
+                <a href="/admin" class="list-group-item ">enrollTokenType</a>
                 <a href="/adminTokenTypesOf" class="list-group-item">tokenTypesOf</a>
-                <a href="/adminUpdateTokenType" class="list-group-item"l>updateTokenType</a>
+                <a href="#" class="list-group-item active">updateTokenType</a>
                 <a href="/adminRetrieveTokenType" class="list-group-item">retrieveTokenType</a>
                 <a href="/adminEnrollAttributeOfTokenType" class="list-group-item">enrollAttributeOfTokenType</a>
                 <a href="/adminUpdateAttributeOfTokenType" class="list-group-item">updateAttributeOfTokenType</a>
@@ -64,46 +64,24 @@
                 <a href="/adminDropTokenType" class="list-group-item">dropTokenType</a>
             </div>
         </div>
-        <!-- /.col-lg-3 -->
-
         <div class="card card-outline-secondary my-4">
             <div class="card-header">
-                <h1>Enroll Token Type </h1>
-
-
-
-                <%--                    <input type="text" id="pages" class="fadeIn third" name="pages" placeholder="pages"><br>--%>
-                <%--                    <input type="text" id="signers" class="fadeIn second" name="signers" placeholder="signers"><br>--%>
-                <%--                    <input type="text" id="signatures" class="fadeIn third" name="signatures" placeholder="signatures"><br>--%>
-                <%--                    <input type="text" id="tokenType" class="fadeIn third" name="tokenType" placeholder="tokenType"><br>--%>
+                <h1>Update Token Type </h1>
                 <div align="right">
                     <input name="addButton" class="btn btn-success" type="button" style="cursor:hand" onClick="insRowForXAttr()" value="Add XAttr">
                 </div>
             </div>
             <div class="card-body" algin="right">
-                <form action="/enrollTokenType" method="post" enctype="multipart/form-data">
+                <form action="/updateTokenType" method="post" enctype="multipart/form-data">
                     <table width="400" border="0" cellspacing="0" cellpadding="0">
-<%--                        <tr>--%>
-<%--                            <td colspan="2" align="left" bgcolor="#FFFFFF">--%>
-<%--                                <table width="100%" border="0" cellpadding="0" cellspacing="0">--%>
+                        <tr>
+                            <td height="25">
+                                <table id="addTable" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
 
-                                    <tr>
-                                        <td height="25">
-                                            <table id="addTable" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
+                                </table>
+                            </td>
 
-                                            </table>
-                                        </td>
-                                        <td height="25">
-                                            <table id="addTable2" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
-
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-
-                                    </tr>
-<%--                            </td>--%>
-<%--                        </tr>--%>
+                        </tr>
                     </table>
                     <input type="hidden" id="ownerKey" name="ownerKey" value="${sessionUser}">
                     <input type="hidden" id="xattrCount" name="xattrCount">
@@ -123,7 +101,6 @@
                 <%--                    <a href="#" class="btn btn-success">Leave a Review</a>--%>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -138,6 +115,7 @@
     function insRowForXAttr() {
 
         var xattrName = 'xattrName'+xattrCount;
+        var xattrValue = 'xattrValue'+xattrCount;
         var xattrType = 'xattrType'+xattrCount;
         oTbl = document.getElementById("addTable");
         var oRow = oTbl.insertRow();
@@ -145,7 +123,8 @@
         var oCell = oRow.insertCell();
 
 
-        frmTag = "<input type=text name=" + "'" + xattrName + "'" + "style=width:200px; height:20px; placeholder='ID'>";
+        frmTag = "<input type=text name=" + "'" + xattrName + "'" + "style=width:200px; height:20px; placeholder='Name'>";
+        frmTag += " <input type=text name=" + "'" + xattrValue + "'" + "style=width:200px; height:20px; placeholder='Initial Value'>";
         frmTag += " <select name=" + "'" + xattrType + "'" + ">\n" +
             "                    <option value=\"\">Data Type</option>\n" +
             "                    <option value=\"String\" selected=\"selected\">String</option>\n" +

@@ -59,7 +59,7 @@
 
             <div class="card card-outline-secondary my-4" style="width:1000px">
                 <div class="card-header">
-                    <h1>${sessionUser}'s Signatures</h1>
+                    <h1>${ownerId}'s Signatures</h1>
                 </div>
                 <div class="card-body">
                     <%
