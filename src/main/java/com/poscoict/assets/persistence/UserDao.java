@@ -27,23 +27,15 @@ public class UserDao {
         return jdbcTemplate.update(query, ownerKey, ownerId);
     }
 
-    public /*User*/Map<String, Object> getUser(String ownerId) {
-
-
+    public Map<String, Object> getOwnerKey(String ownerId) {
         return jdbcTemplate.queryForMap("select * from user where ownerId = ?", ownerId);
+    }
 
-        //ResultSet rs;
-        /*try {
-            return (User) jdbcTemplate.queryForObject("select * from user where id = ?", new Object[]{userId}, new User(rs.getId(), rs.getPasswd()));
-        } catch(Exception e) {
-
-        }*/
-
-        //return null;
+    public Map<String, Object> getOwnerId(String ownerKey) {
+        return jdbcTemplate.queryForMap("select * from user where ownerKey = ?", ownerKey);
     }
 
     public SqlRowSet getUserByUserId(String ownerId) {
-
         return this.jdbcTemplate.queryForRowSet("select * from user where ownerId = ?", ownerId);
     }
 }
