@@ -53,7 +53,7 @@
                 <a href="/standard/balanceOf" class="list-group-item">토큰 개수 조회</a>
                 <a href="/standard/ownerOf" class="list-group-item">토큰 소유자 조회</a>
                 <a href="/standard/transferFrom" class="list-group-item">토큰 소유자 변경</a>
-                <a href="/standard/approve" class="list-group-item"l>토큰 피승인자 설정</a>
+                <a href="/standard/approve" class="list-group-item">토큰 피승인자 설정</a>
                 <a href="/standard/setApprovalForAll" class="list-group-item">운영자 추가/삭제</a>
                 <a href="/standard/getApproved" class="list-group-item">토큰 피승인자 조회</a>
                 <a href="/standard/isApprovedForAll" class="list-group-item">운영자 여부 조회</a>
