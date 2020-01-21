@@ -51,7 +51,7 @@
     <div class="row">
 
         <div class="col-lg-3">
-            <h1 class="my-4">Signature Service</h1>
+            <h1 class="my-4">Token Type</h1>
             <div class="list-group">
                 <a href="/admin" class="list-group-item ">enrollTokenType</a>
                 <a href="/adminTokenTypesOf" class="list-group-item">tokenTypesOf</a>
@@ -150,12 +150,12 @@
         var oCell2 = oRow2.insertCell();
 
         var frmTag = "<input type=text name=" + "'" + uriName + "'" + "style=width:200px; height:20px; placeholder='ID'>";
-        frmTag += " <select name=" + "'" + uriType + "'" + ">\n" +
-            "                    <option value=\"\">Data Type</option>\n" +
-            "                    <option value=\"String\" selected=\"selected\">String</option>\n" +
-            "                    <option value=\"String[]\">String[]</option>\n" +
-            "                    <option value=\"Integer\">Integer</option>\n" +
-            "                    <option value=\"Boolean\">Boolean</option>\n" +
+        frmTag += " <select name=" + "'" + xattrType + "'" + ">\n" +
+            "                    <option value= " + "'\'" + ">Data Type</option>\n" +
+            "                    <option value= " + "'String'" + ">String</option>\n" +
+            "                    <option value= " + "'[String]'" + "selected=selected >[String]</option>\n" +
+            "                    <option value= " + "'Boolean'" + ">Boolean</option>\n" +
+            "                    <option value= " + "'Integer'" + ">Integer</option>\n" +
             "                </select>"
         frmTag += " <button type=button style='width:45pt; height:25pt' class='btn btn-outline-danger' onClick=removeRowForURI()>삭제</button>"
         frmTag += "<br><hr>"

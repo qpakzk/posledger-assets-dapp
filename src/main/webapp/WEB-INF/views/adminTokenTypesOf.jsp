@@ -51,7 +51,7 @@
     <div class="row">
 
         <div class="col-lg-3">
-            <h1 class="my-4">Signature Service</h1>
+            <h1 class="my-4">Token Type</h1>
             <div class="list-group">
                 <a href="/admin" class="list-group-item ">enrollTokenType</a>
                 <a href="#" class="list-group-item active">tokenTypesOf</a>

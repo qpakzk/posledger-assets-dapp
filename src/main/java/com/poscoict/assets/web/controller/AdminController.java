@@ -204,11 +204,11 @@ public class AdminController {
             if (xattrType.equals("String"))
                 xattrValue = "";
             else if (xattrType.equals("[String]"))
-                xattrValue = "[String]";
+                xattrValue = "[]";
             else if (xattrType.equals("Integer"))
                 xattrValue = "0";
             else if (xattrType.equals("Boolean"))
-                xattrValue = "";
+                xattrValue = "true";
             else
                 return "FAILURE";
 
@@ -375,12 +375,14 @@ public class AdminController {
         return "/adminRetrieveAttributeOfTokenType";
     }
 
-    @PostMapping("/retrieveAttributeOfTokenType")
+    @ResponseBody
+    @RequestMapping("/retrieveAttributeOfTokenType")
     public String retrieveAttributeOfTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
 
         String tokenType = req.getParameter("tokenType");
         String ownerKey = req.getParameter("ownerKey");
-        String attribute = (req.getParameter("attribute"));
+        String attribute = (req.getParameter("xattrName"));
+        String result = "";
 
         logger.info("retrieveAttributeOfTokenType ####################");
 
@@ -388,9 +390,13 @@ public class AdminController {
         Manager.setCaller(ownerKey);
 
         List<String> pair = xType.retrieveAttributeOfTokenType(tokenType, attribute);
-        logger.info(pair.toString());
+        if(pair != null) {
+            result += "xattrType : " + pair.get(0) + "\n";
+            result += "value : " + pair.get(1) + "\n";
 
-        return pair.toString();
+        }
+
+        return result;
     }
 
     @GetMapping("/adminDropAttributeTokenType")
@@ -399,18 +405,18 @@ public class AdminController {
         return "/adminDropAttributeTokenType";
     }
 
-    @PostMapping("/dropAttributeTokenType")
+    @ResponseBody
+    @RequestMapping("/dropAttributeTokenType")
     public String dropAttributeTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
-
-        String tokenType = req.getParameter("tokenType");
-        String ownerKey = req.getParameter("ownerKey");
-        String attribute = (req.getParameter("attribute"));
 
         logger.info("dropAttributeTokenType ####################");
 
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+        String attribute = (req.getParameter("xattrName"));
+
         Manager.setChaincodeId(chaincodeId);
         Manager.setCaller(ownerKey);
-
 
         boolean result = xType.dropAttributeOfTokenType(tokenType, attribute);
         if(result == true)
@@ -426,13 +432,23 @@ public class AdminController {
         return "/adminDropTokenType";
     }
 
-    @PostMapping("/dropTokenType")
-    public String dropTokenType() {
+    @ResponseBody
+    @RequestMapping("/dropTokenType")
+    public String dropTokenType(HttpServletRequest req) throws InvalidArgumentException, ProposalException {
 
         logger.info("dropTokenType ####################");
 
-        return "dropTokenType";
+        String tokenType = req.getParameter("tokenType");
+        String ownerKey = req.getParameter("ownerKey");
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(ownerKey);
+
+        boolean result = xType.dropTokenType(tokenType);
+        if(result == true)
+            return "true";
+        else
+            return "false";
+
     }
-
-
 }

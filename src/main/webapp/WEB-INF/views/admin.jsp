@@ -33,13 +33,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/">토큰 타입 기능</a>
+                    <a class="nav-link" href="#">TokenType</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/standard">표준 기능</a>
+                    <a class="nav-link" href="/baseNFTMint">Standard NFT</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/extension">확장 기능</a>
+                    <a class="nav-link" href="/divide">Extenstion NFT</a>
                 </li>
             </ul>
         </div>
@@ -51,7 +51,7 @@
     <div class="row">
 
         <div class="col-lg-3">
-            <h1 class="my-4">Signature Service</h1>
+            <h1 class="my-4">Token Type</h1>
             <div class="list-group">
                 <a href="#" class="list-group-item active">enrollTokenType</a>
                 <a href="/adminTokenTypesOf" class="list-group-item">tokenTypesOf</a>
@@ -83,27 +83,27 @@
             <div class="card-body" algin="right">
                 <form action="/enrollTokenType" method="post" enctype="multipart/form-data">
                     <table width="400" border="0" cellspacing="0" cellpadding="0">
-<%--                        <tr>--%>
-<%--                            <td colspan="2" align="left" bgcolor="#FFFFFF">--%>
-<%--                                <table width="100%" border="0" cellpadding="0" cellspacing="0">--%>
+                        <%--                        <tr>--%>
+                        <%--                            <td colspan="2" align="left" bgcolor="#FFFFFF">--%>
+                        <%--                                <table width="100%" border="0" cellpadding="0" cellspacing="0">--%>
 
-                                    <tr>
-                                        <td height="25">
-                                            <table id="addTable" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
+                        <tr>
+                            <td height="25">
+                                <table id="addTable" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
 
-                                            </table>
-                                        </td>
-                                        <td height="25">
-                                            <table id="addTable2" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
+                                </table>
+                            </td>
+                            <td height="25">
+                                <table id="addTable2" width="400" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" border="0">
 
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
 
-                                    </tr>
-<%--                            </td>--%>
-<%--                        </tr>--%>
+                        </tr>
+                        <%--                            </td>--%>
+                        <%--                        </tr>--%>
                     </table>
                     <input type="hidden" id="ownerKey" name="ownerKey" value="${sessionUser}">
                     <input type="hidden" id="xattrCount" name="xattrCount">
@@ -147,11 +147,11 @@
 
         frmTag = "<input type=text name=" + "'" + xattrName + "'" + "style=width:200px; height:20px; placeholder='ID'>";
         frmTag += " <select name=" + "'" + xattrType + "'" + ">\n" +
-            "                    <option value=\"\">Data Type</option>\n" +
-            "                    <option value=\"String\" selected=\"selected\">String</option>\n" +
-            "                    <option value=\"String[]\">String[]</option>\n" +
-            "                    <option value=\"Integer\">Integer</option>\n" +
-            "                    <option value=\"Boolean\">Boolean</option>\n" +
+            "                    <option value= " + "'\'" + ">Data Type</option>\n" +
+            "                    <option value= " + "'String'" + ">String</option>\n" +
+            "                    <option value= " + "'[String]'" + "selected=selected >[String]</option>\n" +
+            "                    <option value= " + "'Boolean'" + ">Boolean</option>\n" +
+            "                    <option value= " + "'Integer'" + ">Integer</option>\n" +
             "                </select>"
         frmTag += " <button type=button style='width:45pt; height:25pt' class='btn btn-outline-danger' onClick=removeRowForXAttr()>삭제</button>"
         frmTag += "<br><hr>"

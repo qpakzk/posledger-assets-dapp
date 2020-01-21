@@ -30,14 +30,16 @@ public class UserDocDao {
         return this.jdbcTemplate.update(query, ownerKey, _docnum);//sign.getSignID(), sign.getSignPath());
     }
 
-
-
-
     public Map<String, Object>/*List<Doc>*/ getUserDoc(String ownerKey) throws Exception {
 
         return jdbcTemplate.queryForMap("select * from User_Doc where ownerKey = ?", ownerKey);
         //String query = "select * from test";
         //return jdbcTemplate.query(query, new BeanPropertyRowMapper<Doc>(Doc.class));
+    }
+
+    public int updateOwnerKeyByDocNum(String ownerKey, int docnum) {
+        //String query = "UPDATE User_Doc SET ownerKey = " + "'" + ownerKey + "'" + "WHERE docnum = " + docnum;
+        return jdbcTemplate.update("UPDATE User_Doc SET ownerKey = ? WHERE docnum = ?", ownerKey, docnum);
     }
 
 }

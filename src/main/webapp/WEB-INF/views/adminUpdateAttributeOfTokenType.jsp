@@ -51,7 +51,7 @@
     <div class="row">
 
         <div class="col-lg-3">
-            <h1 class="my-4">Signature Service</h1>
+            <h1 class="my-4">Token Type</h1>
             <div class="list-group">
                 <a href="/admin" class="list-group-item ">enrollTokenType</a>
                 <a href="/adminTokenTypesOf" class="list-group-item">tokenTypesOf</a>
@@ -68,7 +68,7 @@
 
         <div class="card card-outline-secondary my-4">
             <div class="card-header">
-                <h1>Enroll Token Type </h1>
+                <h1>Update Attribute Of Token Type </h1>
 
 
 
@@ -94,7 +94,7 @@
                                 <select name="xattrType" id="xattrType">
                                     <option value="\">Data Type</option>
                                     <option value="String" selected="selected">String</option>
-                                    <option value="String[]">String[]</option>
+                                    <option value="[String]">[String]</option>
                                     <option value="Integer">Integer</option>
                                     <option value="Boolean">Boolean</option>
                                 </select>
@@ -139,7 +139,6 @@
 
         ownerKey = document.getElementById("ownerKey").value;
         xattrName = document.getElementById("xattrName").value;
-        xattrType = document.getElementById("xattrType");
         initialValue = document.getElementById("initialValue").value;
         tokenType = document.getElementById("tokenType").value;
 

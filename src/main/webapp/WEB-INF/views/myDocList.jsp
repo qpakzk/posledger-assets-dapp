@@ -117,11 +117,22 @@
                         Store Your Signature
                     </div>
                     <div class="card-body" align="left">
-                        Page <input type="text" id="firstValue" > - <input type="text" id="secondValue" > <br>
-                        tokenId<input type="text" id="docTokenId" >
-                        <input type="hidden" id="ownerKey" value="${sessionUser}">
-                        <input type="submit" class="btn btn-success"  value="divide" onclick="divide(this)">
+                        <table>
+                            <tr>
+                                <td>
+                                    Page <input type="text" id="firstValue" > - <input type="text" id="secondValue" > <br>
+                                    tokenId<input type="text" id="docTokenId" >
+                                    <input type="hidden" id="ownerKey" value="${sessionUser}">
+                                    <input type="submit" class="btn btn-success"  value="divide" onclick="divide(this)">
+                                </td>
+                                <td>
+                                    tokenId <input type="text" id="docTokenIdForTransferFrom" >
+                                    newOwner <input type="text" id="newOwnerId" >
+                                    <input type="submit" class="btn btn-success"  value="transferFrom" onclick="transferFrom(this)">
+                                </td>
+                            </tr>
 
+                        </table>
                     </div>
                 </div>
             </div>
@@ -180,6 +191,30 @@
                 "secondValue" : secondValue
                 //"strImg": dataURL
                 //"test": "test string"
+            },
+            //dataType: "json",
+            success: function (data) {
+                swal({ icon: "success", button: "close"});
+            },
+            error: function (err) {
+                swal("error....." + err);
+            }
+        });
+    }
+
+    function transferFrom() {
+
+        ownerKey = document.getElementById("ownerKey").value;
+        newOwnerId = document.getElementById("newOwnerId").value;
+        docTokenIdForTransferFrom = document.getElementById("docTokenIdForTransferFrom").value;
+
+        $.ajax({
+            type: "POST",
+            url: "/transferFromDoc",
+            data: {
+                "ownerKey" : ownerKey,
+                "newOwnerId" : newOwnerId,
+                "docTokenIdForTransferFrom": docTokenIdForTransferFrom,
             },
             //dataType: "json",
             success: function (data) {

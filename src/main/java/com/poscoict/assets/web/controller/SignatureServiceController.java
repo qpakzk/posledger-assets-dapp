@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.MapEntry;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfImportedPage;
@@ -958,7 +959,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 
 			// Create a writer for the outputstream
 			Document document = new Document(PageSize.A4);
-			OutputStream outputStream = new FileOutputStream(fullPath+sysTokenId+path);
+			OutputStream outputStream = new FileOutputStream(fullPath+valueOf(sysTokenId-1)+path);
 			PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
 			document.open();
@@ -985,7 +986,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 				 */
 				final MessageDigest md = MessageDigest.getInstance("SHA-512");
 
-				is = new FileInputStream(fullPath+valueOf(sysTokenId-1)+path);	// absolute path needed
+				is = new FileInputStream(fullPath+valueOf(sysTokenId)+path);	// absolute path needed
 				byte[] buffer = new byte[1024];
 				int readBytes = 0;
 
@@ -1027,7 +1028,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 
 			// Create a writer for the outputstream
 			document = new Document(PageSize.A4);
-			outputStream = new FileOutputStream(fullPath+sysTokenId+path);
+			outputStream = new FileOutputStream(fullPath+valueOf(sysTokenId-1)+path);
 			writer = PdfWriter.getInstance(document, outputStream);
 
 			document.open();
@@ -1104,12 +1105,42 @@ public class SignatureServiceController extends ExceptionHandleController {
 		return "SUCCESS";
 	}
 
-	/**
-	 * 회원 가입
-	 *
-	 * @return HttpResponse
-	 * @throws RestResourceException
-	 */
+	@ResponseBody
+	@RequestMapping("/transferFromDoc")
+	public String transferFromDoc(HttpServletRequest req) throws Exception {
+
+		String docTokenIdForTransferFrom = req.getParameter("docTokenIdForTransferFrom");
+		String ownerKey = req.getParameter("ownerKey");
+		String newOwnerId = req.getParameter("newOwnerId");
+		String newOwnerKey = "";
+
+		int docnum = 0;
+
+		// get ownerKey
+		Map<String, Object> userMap = userDao.getOwnerKey(newOwnerId);
+		newOwnerKey = (String)userMap.get("ownerKey");
+
+		// get docnum
+		logger.info(ownerKey + " " + docTokenIdForTransferFrom + " " + newOwnerId);
+		Map<String, Object> docMap = docDao.getDocByDocTokenId(docTokenIdForTransferFrom);
+		docnum = (int)docMap.get("docnum");
+
+		// update newOwnerKey and docnum
+		user_docDao.updateOwnerKeyByDocNum(newOwnerKey, docnum);
+
+		Manager.setChaincodeId(chaincodeId);
+		Manager.setCaller(ownerKey);
+
+		eerc721.transferFrom(ownerKey, newOwnerKey, docTokenIdForTransferFrom);
+
+		return "/main";
+	}
+		/**
+         * 회원 가입
+         *
+         * @return HttpResponse
+         * @throws RestResourceException
+         */
 	@RequestMapping(value = "/member/register/action", method = RequestMethod.POST)
 	@ResponseBody
 	public HttpResponse joinUser(@RequestParam(value = "pushToken", required = false) String pushToken,
