@@ -98,7 +98,7 @@ public class ExtensionTest {
         Manager.setCaller(david);
 
         Map<String, Object> xattr = new HashMap<>();
-        int pages = 100;
+        int pages = 1000;
         String hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
         List<String> signers =
                 new ArrayList<>(Arrays.asList("1FbLcUY39EmYSjtxjpHSVKEeUZQNKAvooa",
@@ -118,6 +118,59 @@ public class ExtensionTest {
         String id = "160";
         String type = "doc";
         boolean result = xnft.mint(id, type, david, xattr, uri);
+        assertTrue(result);
+    }
+
+    @Test
+    public void setXAttrTest() throws Exception {
+        String fileName = "./certForDavid";
+        MultipartFile certfile = new MockMultipartFile(fileName, new FileInputStream(fileName));
+
+        PosCertificate posCertificate;
+        try {
+            posCertificate = objectMapper.readValue(certfile.getBytes(), new TypeReference<PosCertificate>(){});
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("유효하지 않은 인증서 형식입니다.");
+        }
+
+        // 인증서 비밀번호 검증
+        boolean isPassward;
+
+        try {
+            isPassward = posCertificateService.verifyPosCertificatePassword(posCertificate, CERT_PASSWARD);
+        } catch(Exception e) {
+            logger.error(e);
+            throw new RestResourceException("인증서 비밀번호를 확인해주세요.");
+        }
+
+        PosCertificateMeta posCertificateMeta = null;
+
+        if (isPassward) {
+            try {
+                posCertificateMeta = posCertificateService.getMobilePosCertificateMeta(posCertificate, CERT_PASSWARD, message.getMessage("application.posledger.challenge.domain"));
+            } catch (Exception e) {
+                logger.error(e);
+                throw new RestResourceException(e.getLocalizedMessage());
+            }
+        }
+
+        String david;
+        try {
+            david = posCertificateMeta.getOwnerKey();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new NullPointerException(e.getLocalizedMessage());
+        }
+
+        String id = "160";
+        String index = "pages";
+        int value = 100;
+
+        Manager.setChaincodeId(chaincodeId);
+        Manager.setCaller(david);
+
+        boolean result = xnft.setXAttr(id, index, value);
         assertTrue(result);
     }
 
