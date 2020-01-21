@@ -33,13 +33,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">TokenType</a>
+                    <a class="nav-link" href="/">토큰 타입 기능</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/baseNFTMint">Standard NFT</a>
+                    <a class="nav-link" href="/standard">표준 기능</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/divide">Extenstion NFT</a>
+                    <a class="nav-link" href="/extension">확장 기능</a>
                 </li>
             </ul>
         </div>
