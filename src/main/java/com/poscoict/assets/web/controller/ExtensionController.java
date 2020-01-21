@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class EERC721Controller extends ExceptionHandleController {
-    private static final Logger logger = LogManager.getLogger(EERC721Controller.class);
+public class ExtensionController extends ExceptionHandleController {
+    private static final Logger logger = LogManager.getLogger(ExtensionController.class);
 
     @Autowired
     private UserService userService;
