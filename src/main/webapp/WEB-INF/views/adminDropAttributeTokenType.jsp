@@ -59,7 +59,7 @@
                 <a href="/adminRetrieveTokenType" class="list-group-item">토큰 타입 조회</a>
                 <a href="/adminEnrollAttributeOfTokenType" class="list-group-item">토큰 타입 속성 등록</a>
                 <a href="/adminUpdateAttributeOfTokenType" class="list-group-item">토큰 타입 속성 수정</a>
-                <a href="/retrieveAttributeOfTokenType" class="list-group-item ">토큰 타입 속성 조회</a>
+                <a href="/adminretrieveAttributeOfTokenType" class="list-group-item ">토큰 타입 속성 조회</a>
                 <a href="# " class="list-group-item active">토큰 타입 속성 삭제</a>
                 <a href="/adminDropTokenType" class="list-group-item">토큰 타입 삭제</a>
             </div>
