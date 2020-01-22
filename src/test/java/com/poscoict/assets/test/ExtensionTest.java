@@ -115,7 +115,7 @@ public class ExtensionTest {
         uri.put("path", path);
         uri.put("hash", merkleroot);
 
-        String id = "160";
+        String id = "170";
         String type = "doc";
         boolean result = xnft.mint(id, type, david, xattr, uri);
         assertTrue(result);
@@ -163,7 +163,7 @@ public class ExtensionTest {
             throw new NullPointerException(e.getLocalizedMessage());
         }
 
-        String id = "160";
+        String id = "170";
         String index = "pages";
         int value = 100;
 

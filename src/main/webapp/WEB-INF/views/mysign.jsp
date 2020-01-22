@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/main">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -31,10 +31,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="/admin">토큰 타입 기능</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/standard">표준 기능</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/extension">확장 기능</a>
                 </li>
             </ul>
         </div>
@@ -57,7 +60,7 @@
         <div class="col-lg-9">
             <!-- /.card -->
 
-            <div class="card card-outline-secondary my-4" style="width:1000px">
+            <div class="card card-outline-secondary my-4" style="width:800px">
                 <div class="card-header">
                     <h1>${ownerId}'s Signatures</h1>
                 </div>

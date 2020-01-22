@@ -25,7 +25,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/main">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -33,10 +33,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="/admin">토큰 타입 기능</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/standard">표준 기능</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/extension">확장 기능</a>
                 </li>
             </ul>
         </div>
@@ -77,6 +80,7 @@
                 </div>
                 <div class="card-body" align="right">
 
+                    <input type="hidden" id="ownerKey" value="${sessionUser}">
                     <input type="hidden" id="signer" value="${sessionUser}">
                     <input type="submit" class="btn btn-success"  value="store" onclick="store(this)">
 
@@ -132,7 +136,7 @@
     function store(link) {
         //downloadCanvas(this, myCanvas, 'test.png');
         var signer = document.getElementById("signer").value;
-        var owner = document.getElementById("signer").value;
+        var ownerKey = document.getElementById("ownerKey").value;
         //alert(signer);
         canvas = document.getElementById("myCanvas");
         var dataURL = canvas.toDataURL("image/png", 1.0);//.replace("image/png", "image/octet-stream");
@@ -144,7 +148,7 @@
             type: "POST",
             url: "/img",
             data: {
-                "owner":  owner,
+                "ownerKey":  ownerKey,
                 "signer": signer,
                 "strImg": dataURL
                 //"test": "test string"

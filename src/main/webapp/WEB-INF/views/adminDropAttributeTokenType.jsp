@@ -25,7 +25,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/main">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -33,7 +33,7 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/">토큰 타입 기능</a>
+                    <a class="nav-link" href="/admin">토큰 타입 기능</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/standard">표준 기능</a>
@@ -53,15 +53,15 @@
         <div class="col-lg-3">
             <h1 class="my-4">Token Type</h1>
             <div class="list-group">
-                <a href="/admin" class="list-group-item ">enrollTokenType</a>
-                <a href="/adminTokenTypesOf" class="list-group-item">tokenTypesOf</a>
-                <a href="/adminUpdateTokenType" class="list-group-item"l>updateTokenType</a>
-                <a href="/adminRetrieveTokenType" class="list-group-item">retrieveTokenType</a>
-                <a href="/adminEnrollAttributeOfTokenType" class="list-group-item">enrollAttributeOfTokenType</a>
-                <a href="/adminUpdateAttributeOfTokenType" class="list-group-item">updateAttributeOfTokenType</a>
-                <a href="/retrieveAttributeOfTokenType" class="list-group-item ">retrieveAttributeOfTokenType</a>
-                <a href="# " class="list-group-item active">dropAttributeTokenType</a>
-                <a href="/adminDropTokenType" class="list-group-item">dropTokenType</a>
+                <a href="/admin" class="list-group-item ">토큰 타입 등록</a>
+                <a href="/adminTokenTypesOf" class="list-group-item">전체 토큰 타입 목록 조회</a>
+                <a href="/adminUpdateTokenType" class="list-group-item"l>토큰 타입 수정</a>
+                <a href="/adminRetrieveTokenType" class="list-group-item">토큰 타입 조회</a>
+                <a href="/adminEnrollAttributeOfTokenType" class="list-group-item">토큰 타입 속성 등록</a>
+                <a href="/adminUpdateAttributeOfTokenType" class="list-group-item">토큰 타입 속성 수정</a>
+                <a href="/retrieveAttributeOfTokenType" class="list-group-item ">토큰 타입 속성 조회</a>
+                <a href="# " class="list-group-item active">토큰 타입 속성 삭제</a>
+                <a href="/adminDropTokenType" class="list-group-item">토큰 타입 삭제</a>
             </div>
         </div>
         <div class="card card-outline-secondary my-4">

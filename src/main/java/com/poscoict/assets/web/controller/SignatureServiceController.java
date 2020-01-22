@@ -313,6 +313,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		uri.put("hash", merkleroot);
 
 
+		logger.info(sysTokenId + " " + ownerKey + " " + sigId + " " + path + " " + hash);
 		xnft.mint(valueOf(sysTokenId-1), "sig", ownerKey, xattr, uri);
 		sysTokenId++;
 
@@ -696,14 +697,27 @@ public class SignatureServiceController extends ExceptionHandleController {
 			signature = (String) sigTestMap.get("sigid");    // only one sigId
 		}
 
-		List<String> signatures = new ArrayList<>();
+		logger.info("signature >>>>>> " + signature);
+
+		String original = xnft.getXAttr(docTokenId, "signatures");
+		logger.info("original >>>>>> " + original);
+		List<String> signatures;
+		if (original.equals("[]")) {
+			signatures = new ArrayList<>();
+		}
+		else {
+			signatures = new ArrayList<>(Arrays.asList(original.substring(1, original.length() - 1).split(", ")));
+		}
+
+		logger.info("signatures >>>>>> " + signatures.toString());
 		signatures.add(signature);
-		String attr = signatures.toString();
 
 		Manager.setChaincodeId(chaincodeId);
 		Manager.setCaller(signer);
-		boolean result = eerc721.update(docTokenId, index, attr);
+		//boolean result = eerc721.update(docTokenId, index, attr);
 
+		logger.info(" >>> " + signature);
+		boolean result = eerc721.setXAttr(docTokenId, index, signatures);
 		return new RedirectView("main");
 	}
 
@@ -986,7 +1000,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 				 */
 				final MessageDigest md = MessageDigest.getInstance("SHA-512");
 
-				is = new FileInputStream(fullPath+valueOf(sysTokenId)+path);	// absolute path needed
+				is = new FileInputStream(fullPath+valueOf(sysTokenId-1)+path);	// absolute path needed
 				byte[] buffer = new byte[1024];
 				int readBytes = 0;
 
@@ -1106,6 +1120,61 @@ public class SignatureServiceController extends ExceptionHandleController {
 	}
 
 	@ResponseBody
+	@RequestMapping("/updateDoc")
+	public String updateDoc(HttpServletRequest req) throws Exception {
+
+		String docTokenIdForUpdate = req.getParameter("docTokenIdForUpdate");
+		String signersOne = req.getParameter("signersOne");
+		String signersTwo = req.getParameter("signersTwo");
+		String index = req.getParameter("index");
+
+		Map<String, Object> userMap = userDao.getOwnerKey(signersOne);
+		String signerOneOnwerKey = (String) userMap.get("ownerKey");
+
+		userMap = userDao.getOwnerKey(signersTwo);
+		String signerTwoOnwerKey = (String) userMap.get("ownerKey");
+
+		List<String> signers = new ArrayList<>();
+		signers.add(signerOneOnwerKey);
+		signers.add(signerTwoOnwerKey);
+		String attr = signers.toString();
+
+		String ownerKey = signerOneOnwerKey;
+
+		// get docnum
+		logger.info(ownerKey + " " + docTokenIdForUpdate + " " + signerTwoOnwerKey);
+		Map<String, Object> docMap = docDao.getDocByDocTokenId(docTokenIdForUpdate);
+		int docnum = (int)docMap.get("docnum");
+
+		// update newOwnerKey and docnum
+		List<UserDocVo> userDocVoList = user_docDao.listForBeanPropertyRowMapperByDocNum(docnum);
+//		boolean check = false;
+//		for(int i=0; i<userDocVoList.size(); i++) {
+//
+//			if((userDocVoList.get(i).getOnerKey().equals(signerOneOnwerKey)))
+//				check = true;
+//		}
+//		if(check == false)
+			//user_docDao.insert(signerOneOnwerKey, docnum);
+
+//		check = false;
+//		for(int i=0; i<userDocVoList.size(); i++) {
+//
+//			if((userDocVoList.get(i).getOnerKey().equals(signerOneOnwerKey)))
+//				check = true;
+//		}
+//		if(check == false)
+			user_docDao.insert(signerTwoOnwerKey, docnum);
+
+		Manager.setChaincodeId(chaincodeId);
+		Manager.setCaller(ownerKey);
+
+		eerc721.update(docTokenIdForUpdate, index, attr);
+
+		return "/main";
+	}
+
+	@ResponseBody
 	@RequestMapping("/transferFromDoc")
 	public String transferFromDoc(HttpServletRequest req) throws Exception {
 
@@ -1135,6 +1204,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 
 		return "/main";
 	}
+
 		/**
          * 회원 가입
          *

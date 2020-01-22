@@ -27,7 +27,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/main">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -35,10 +35,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="/admin">토큰 타입 기능</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/standard">표준 기능</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/extension">확장 기능</a>
                 </li>
             </ul>
         </div>
@@ -61,10 +64,10 @@
         </div>
         <!-- /.col-lg-3 -->
 
-        <div class="col-lg-9">
-            <div class="card card-outline-secondary my-4" style="width:1000px">
+        <div class="col-lg-7">
+            <div class="card card-outline-secondary my-4" style="width:800px">
                 <div class="card-header">
-                    <h1>${ownerId}'s Document List</h1>
+                    <h1> Document List</h1>
                 </div>
                 <div class="card-body">
                     <%
@@ -114,24 +117,36 @@
                 </div>
                 <div class="card card-outline-secondary my-4">
                     <div class="card-header">
-                        Store Your Signature
+
                     </div>
                     <div class="card-body" align="left">
-                        <table>
+                        <table width="750">
                             <tr>
                                 <td>
-                                    Page <input type="text" id="firstValue" > - <input type="text" id="secondValue" > <br>
-                                    tokenId<input type="text" id="docTokenId" >
-                                    <input type="hidden" id="ownerKey" value="${sessionUser}">
-                                    <input type="submit" class="btn btn-success"  value="divide" onclick="divide(this)">
+                                    Page &nbsp;&nbsp;&nbsp;<input type="text" style="width : 100px" id="firstValue" class="btn-outline-info"> - <input type="text" style="width : 100px" id="secondValue" class="btn-outline-info"> tokenId<input type="text" style="width : 100px" id="docTokenId" class="btn-outline-info"> &nbsp
                                 </td>
+                                <td align="right">
+                                    <input type="submit" class="btn btn-success"  value="divide" onclick="divide(this)">
+                                    <input type="hidden" id="ownerKey" value="${sessionUser}">
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>
-                                    tokenId <input type="text" id="docTokenIdForTransferFrom" >
-                                    newOwner <input type="text" id="newOwnerId" >
+                                    tokenId <input type="text" style="width : 100px" id="docTokenIdForTransferFrom" class="btn-outline-info">
+                                    newOwner <input type="text" style="width : 100px" id="newOwnerId" class="btn-outline-info"> &nbsp
+                                </td>
+                                <td align="right">
                                     <input type="submit" class="btn btn-success"  value="transferFrom" onclick="transferFrom(this)">
                                 </td>
                             </tr>
-
+                            <tr>
+                                <td>
+                                    Signers <input type="text" style="width : 100px" id="signersOne" class="btn-outline-info"> &nbsp <input type="text" style="width : 100px" id="signersTwo" class="btn-outline-info"> tokenId <input type="text" style="width : 100px" id="docTokenIdForUpdate" class="btn-outline-info"> &nbsp index <input type="text" style="width : 100px" id="index" class="btn-outline-info">
+                                </td>
+                                <td align="right">
+                                    &nbsp <input type="submit" class="btn btn-success"  value="update" onclick="update(this)">
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -164,9 +179,9 @@
             //dataType: "json",
             success: function (data) {
                 if(data[2] == 'true')
-                    swal({title: data[1], text: data[0], icon: "success", button: "close",});
+                    swal({text: data[1], text: data[0], icon: "success", button: "close",});
                 else
-                    swal({title: data[1], text: data[0], icon: "error", button: "close",});
+                    swal({text: data[1], text: data[0], icon: "error", button: "close",});
             },
             error: function (err) {
                 swal("error" + err);
@@ -215,6 +230,34 @@
                 "ownerKey" : ownerKey,
                 "newOwnerId" : newOwnerId,
                 "docTokenIdForTransferFrom": docTokenIdForTransferFrom,
+            },
+            //dataType: "json",
+            success: function (data) {
+                swal({ icon: "success", button: "close"});
+            },
+            error: function (err) {
+                swal("error....." + err);
+            }
+        });
+    }
+
+    function update() {
+
+        ownerKey = document.getElementById("ownerKey").value;
+        signersOne = document.getElementById("signersOne").value;
+        signersTwo = document.getElementById("signersTwo").value;
+        docTokenIdForUpdate = document.getElementById("docTokenIdForUpdate").value;
+        index = document.getElementById("index").value;
+
+        $.ajax({
+            type: "POST",
+            url: "/updateDoc",
+            data: {
+                "ownerKey" : ownerKey,
+                "signersOne" : signersOne,
+                "signersTwo" : signersTwo,
+                "docTokenIdForUpdate": docTokenIdForUpdate,
+                "index" : index
             },
             //dataType: "json",
             success: function (data) {

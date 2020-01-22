@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/main">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -31,10 +31,13 @@
                     <a class="nav-link" href="/index">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="/admin">토큰 타입 기능</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/standard">표준 기능</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/extension">확장 기능</a>
                 </li>
             </ul>
         </div>
@@ -88,12 +91,13 @@
                 <div class="card-body" align="right">
 
                     <form action="/doSign" method="post">
-                        <input type="hidden" name="signer" value="${sessionUser}">
-                        <input type="hidden" name="docNum" value=${docNum}>
-                        <input type="hidden" name="docId" value=${docId}>
-                        <input type="hidden" name="tokenId" value=${tokenId}>
-                        <input type="hidden" name="docPath" value=${docPath}>
-                        <input type="hidden" name="sigId" value=${sigId}>
+                        <input type="hidden" id="signer" name="signer" value="${sessionUser}">
+                        <input type="hidden" id="ownerKey" name="ownerKey" value="${sessionUser}">
+                        <input type="hidden" id="docNum" name="docNum" value=${docNum}>
+                        <input type="hidden" id="docId" name="docId" value=${docId}>
+                        <input type="hidden" id="tokenId" name="tokenId" value=${tokenId}>
+                        <input type="hidden" id="docPath" name="docPath" value=${docPath}>
+                        <input type="hidden" id="sigId" name="sigId" value=${sigId}>
 
                         <input type="submit" class="btn btn-success" value="sign">
 
