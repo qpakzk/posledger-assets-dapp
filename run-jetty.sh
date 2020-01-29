@@ -10,4 +10,4 @@ pkill -9 -ef posledger-assets-dapp
 
 echo "######### start assets webapp ... ##########"
 cd $ASSET_PATH
-nohup mvn jetty:run > /dev/null 2>&1 &
+mvn  -DJava.net.preferIPv4Stack=true -Djetty.port=5984 jetty:run 

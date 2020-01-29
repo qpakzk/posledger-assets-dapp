@@ -18,24 +18,24 @@ public class UserDao {
     private JdbcTemplate jdbcTemplate;
 
     public List<User> listForBeanPropertyRowMapper() {
-        String query = "SELECT * FROM user";
+        String query = "SELECT * FROM User";
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<User>(User.class));
     }
 
     public int insert(String ownerKey, String ownerId) {
-        String query = "INSERT INTO user(ownerKey, ownerId) VALUES(?, ?)";
+        String query = "INSERT INTO User(ownerKey, ownerId) VALUES(?, ?)";
         return jdbcTemplate.update(query, ownerKey, ownerId);
     }
 
     public Map<String, Object> getOwnerKey(String ownerId) {
-        return jdbcTemplate.queryForMap("select * from user where ownerId = ?", ownerId);
+        return jdbcTemplate.queryForMap("select * from User where ownerId = ?", ownerId);
     }
 
     public Map<String, Object> getOwnerId(String ownerKey) {
-        return jdbcTemplate.queryForMap("select * from user where ownerKey = ?", ownerKey);
+        return jdbcTemplate.queryForMap("select * from User where ownerKey = ?", ownerKey);
     }
 
     public SqlRowSet getUserByUserId(String ownerId) {
-        return this.jdbcTemplate.queryForRowSet("select * from user where ownerId = ?", ownerId);
+        return this.jdbcTemplate.queryForRowSet("select * from User where ownerId = ?", ownerId);
     }
 }

@@ -181,7 +181,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		logger.info(" > " + signer);
 		logger.info(" > " + strImg);
 
-		String folder = req.getServletContext().getRealPath("/");// + uploadpath;
+		String folder = "/home/fabric/posledger-assets-dapp/src/main/webapp/";//req.getServletContext().getRealPath("/");// + uploadpath;
 		String fullpath = "";
 		String[] strParts = strImg.split(",");
 		String rstStrImg = strParts[1];
@@ -405,9 +405,9 @@ public class SignatureServiceController extends ExceptionHandleController {
 			//	RandomAccessFile file = new RandomAccessFile("/home/yoongdoo0819/dSignature-server/"+mf.getOriginalFilename(), "r");
 			logger.info(mf.getOriginalFilename());
 
-			convFile = new File("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+mf.getOriginalFilename());
+			convFile = new File(mf.getOriginalFilename());
 			convFile.createNewFile();
-			FileOutputStream fos = new FileOutputStream(convFile);	// absolute path needed
+			FileOutputStream fos = new FileOutputStream("/home/fabric/posledger-assets-dapp/src/main/webapp/"+convFile);	// absolute path needed
 			fos.write(mf.getBytes());
 			fos.close();
 
@@ -473,7 +473,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		Manager.setCaller(owner);
 
 		Map<String, Object> xattr = new HashMap<>();
-		PdfReader reader = new PdfReader(new PdfReader("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+mf.getOriginalFilename()));
+		PdfReader reader = new PdfReader(new PdfReader("/home/fabric/posledger-assets-dapp/src/main/webapp/"+mf.getOriginalFilename()));
 		int pages = reader.getNumberOfPages();
 		reader.close();
 		String hash = "c35b21d6ca39aa7cc3b79a705d989f1a6e88b99ab43988d74048799e3db926a3";
@@ -863,12 +863,12 @@ public class SignatureServiceController extends ExceptionHandleController {
 		try {
 
 			// existing pdf
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\final.pdf")); // absolute path needed
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("/home/fabric/posledger-assets-dapp/src/main/webapp/final.pdf")); // absolute path needed
 			document.open();
 			PdfContentByte cb = writer.getDirectContent();
 
 			// Load existing PDF
-			PdfReader reader = new PdfReader("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+docPath);	// absolute path needed
+			PdfReader reader = new PdfReader("/home/fabric/posledger-assets-dapp/src/main/webapp/"+docPath);	// absolute path needed
 			for(int i=1; i<=reader.getNumberOfPages(); i++) {
 				PdfImportedPage page = writer.getImportedPage(reader, i);
 
@@ -893,10 +893,10 @@ public class SignatureServiceController extends ExceptionHandleController {
 			 */
 			for(int i=0; i<sigPathList.length; i++) {
 				section[i] = chapter1.addSection(new Paragraph(signers.get(i)));
-				f = new File("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+sigPathList[i]);    // absolute path needed
+				f = new File("/home/fabric/posledger-assets-dapp/src/main/webapp/"+sigPathList[i]);    // absolute path needed
 
 				if(f.isFile()) {
-					Image section1Image = Image.getInstance("C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\"+sigPathList[i]);   // absolute path needed
+					Image section1Image = Image.getInstance("/home/fabric/posledger-assets-dapp/src/main/webapp/"+sigPathList[i]);   // absolute path needed
 					section[i].add(section1Image);
 				}
 			}
@@ -932,7 +932,7 @@ public class SignatureServiceController extends ExceptionHandleController {
 		int firstFromPage = 1;
 		int secondFromPage = secondValue+1;
 
-		String fullPath = "C:\\Users\\Administrator\\Desktop\\temp\\posledger-assets-dapp\\target\\assets\\";
+		String fullPath = "/home/fabric/posledger-assets-dapp/src/main/webapp/";
 
 		String queryResult = eerc721.query(docTokenId);
 		logger.info("tokenId >>> " + docTokenId);

@@ -19,7 +19,7 @@ public class TokenDao {
 
     public Map<String, Object>/*List<Doc>*/ getTokenNum() throws Exception {
 
-        return jdbcTemplate.queryForMap("select auto_increment from information_schema.tables where table_name = 'token'");
+        return jdbcTemplate.queryForMap("select auto_increment from information_schema.tables where table_name = 'Token'");
         //String query = "select * from test";
         //return jdbcTemplate.query(query, new BeanPropertyRowMapper<Doc>(Doc.class));
     }

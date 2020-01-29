@@ -1,10 +1,10 @@
-drop table user_sig;
-drop table user_doc;
-drop table user_token;
-drop table sig;
-drop table doc;
-drop table user;
-drop table token;
+drop table User_Sig;
+drop table User_Doc;
+drop table User_Token;
+drop table Sig;
+drop table Doc;
+drop table User;
+drop table Token;
 
 
 
@@ -31,19 +31,19 @@ signers varchar(100),
 primary key(docnum)
 );
 
-create table User_Sig ( 
+create table User_Sig (
 ownerKey varchar(100),
-signum int, 
+signum int,
 primary key(ownerKey, signum),
-foreign key(ownerKey) references User(ownerKey) on update cascade, 
+foreign key(ownerKey) references User(ownerKey) on update cascade,
 foreign key(signum) references Sig(signum) on update cascade
 );
 
-create table User_Doc ( 
+create table User_Doc (
 ownerKey varchar(100),
-docnum int, 
+docnum int,
 primary key(ownerKey, docNum),
-foreign key(ownerKey) references User(ownerKey) on update cascade, 
+foreign key(ownerKey) references User(ownerKey) on update cascade,
 foreign key(docnum) references Doc(docnum) on update cascade
 );
 
@@ -56,7 +56,8 @@ create table User_Token (
 ownerKey varchar(100),
 tokenId int auto_increment,
 primary key(ownerKey, tokenId),
-foreign key(ownerKey) references User(ownerKey) on update cascade, 
+foreign key(ownerKey) references User(ownerKey) on update cascade,
 foreign key(tokenId) references Token(tokenId) on update cascade
 );
+
 
