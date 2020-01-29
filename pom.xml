@@ -201,10 +201,10 @@
 				<configuration>
 					<war>${project.basedir}/target/assets.war</war>
 					<webApp>
-						<contextPath>/assets</contextPath>
+						<contextPath>/</contextPath>
 					</webApp>
 					<httpConnector>
-						<port>8020</port>
+						<port>5984</port>
 					</httpConnector>
 				</configuration>
 			</plugin>
